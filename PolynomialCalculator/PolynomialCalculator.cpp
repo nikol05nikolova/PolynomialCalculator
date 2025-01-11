@@ -2,10 +2,27 @@
 //
 
 #include <iostream>
+using namespace std;
+
+void displayMenu() {
+    cout << "Welcome to Polynomial Calculator - a mini project intended to work with polynomials with rational coefficients" << endl;
+    cout << "Choose one of the following functionalities:" << endl;
+    cout << "1) Add polynomials" << endl;
+    cout << "2) Subtract polynomials" << endl;
+    cout << "3) Multiply polynomials" << endl;
+    cout << "4) Divide polynomials" << endl;
+    cout << "5) Multiply polynomial by scalar" << endl;
+    cout << "6) Find value of polinomial ata a given number" << endl;
+    cout << "7) Find GCD of two polynomials" << endl;
+    cout << "8) Display Vieta's formulas for given polynomial" << endl;
+    cout << "9) Represent a polynomial in powers of (x + a)" << endl;
+    cout << "10) Factor polynomial and find its rational roots" << endl;
+    cout << "11) Quit program" << endl;
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    displayMenu();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
