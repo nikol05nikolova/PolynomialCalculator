@@ -5,42 +5,51 @@
 using namespace std;
 
 void displayMenu() {
-    cout << "Welcome to Polynomial Calculator - a mini project intended to work with polynomials with rational coefficients" << endl;
-    cout << "Choose one of the following functionalities:" << endl;
-    cout << "1) Add polynomials" << endl;
-    cout << "2) Subtract polynomials" << endl;
-    cout << "3) Multiply polynomials" << endl;
-    cout << "4) Divide polynomials" << endl;
-    cout << "5) Multiply polynomial by scalar" << endl;
-    cout << "6) Find value of polinomial ata a given number" << endl;
-    cout << "7) Find GCD of two polynomials" << endl;
-    cout << "8) Display Vieta's formulas for given polynomial" << endl;
-    cout << "9) Represent a polynomial in powers of (x + a)" << endl;
-    cout << "10) Factor polynomial and find its rational roots" << endl;
-    cout << "11) Quit program" << endl << endl;
+	cout << "Welcome to Polynomial Calculator - a mini project intended to work with polynomials with rational coefficients" << endl;
+	cout << "Choose one of the following functionalities:" << endl;
+	cout << "1) Add polynomials" << endl;
+	cout << "2) Subtract polynomials" << endl;
+	cout << "3) Multiply polynomials" << endl;
+	cout << "4) Divide polynomials" << endl;
+	cout << "5) Multiply polynomial by scalar" << endl;
+	cout << "6) Find value of polinomial ata a given number" << endl;
+	cout << "7) Find GCD of two polynomials" << endl;
+	cout << "8) Display Vieta's formulas for given polynomial" << endl;
+	cout << "9) Represent a polynomial in powers of (x + a)" << endl;
+	cout << "10) Factor polynomial and find its rational roots" << endl;
+	cout << "11) Quit program" << endl << endl;
 }
 
 int chooseOption() {
-    int option;
-    cout << "Enter your option here>> ";
-    cin >> option;
+	int option;
+	cout << "Enter your option here>> ";
+	cin >> option;
 
-    while (option < 1 || option > 11)
-    {
-        cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
-        cout << "Enter your option here>> ";
-        cin >> option;
-    }
+	while (option < 1 || option > 11)
+	{
+		if (cin.fail())
+		{
+			cin.clear();
+			while (cin.get() != '\n');
+			cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
+		}
+		else
+		{
+			cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
+		}
+		cout << "Enter your option here>> ";
+		cin >> option;
+	}
 
-    cout << endl << endl;
+	cout << endl << endl;
 
-    return option;
+	return option;
 }
 
 int main()
 {
-    displayMenu();
-    int option = chooseOption();
+	displayMenu();
+	int option = chooseOption();
 
 }
 
