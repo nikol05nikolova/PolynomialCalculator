@@ -2,6 +2,8 @@
 //
 
 #include <iostream>
+#include <vector>
+#include <utility>
 using namespace std;
 
 void displayMenu() {
@@ -46,11 +48,29 @@ int chooseOption() {
 	return option;
 }
 
+void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
+	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
+	int degree;
+	cout << "Enter degree of your polynomial>> ";
+	cin >> degree;
+
+
+	for (int i = degree; i >= 0; --i) {
+		double coefficient;
+		cout << "Enter coefficient before x^" << i << ">> ";
+		cin >> coefficient;
+		if (coefficient != 0) {
+			polynomial.push_back({ i, coefficient });
+		}
+	}
+}
+
 int main()
 {
+	vector<pair<int, double>> polynomial1, polynomial2, result;
 	displayMenu();
 	int option = chooseOption();
-
+	inputPolynomial(polynomial1, 'P');
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
