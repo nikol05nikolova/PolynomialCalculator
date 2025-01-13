@@ -17,12 +17,31 @@ void displayMenu() {
     cout << "8) Display Vieta's formulas for given polynomial" << endl;
     cout << "9) Represent a polynomial in powers of (x + a)" << endl;
     cout << "10) Factor polynomial and find its rational roots" << endl;
-    cout << "11) Quit program" << endl;
+    cout << "11) Quit program" << endl << endl;
+}
+
+int chooseOption() {
+    int option;
+    cout << "Enter your option here>> ";
+    cin >> option;
+
+    while (option < 1 || option > 11)
+    {
+        cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
+        cout << "Enter your option here>> ";
+        cin >> option;
+    }
+
+    cout << endl << endl;
+
+    return option;
 }
 
 int main()
 {
     displayMenu();
+    int option = chooseOption();
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
