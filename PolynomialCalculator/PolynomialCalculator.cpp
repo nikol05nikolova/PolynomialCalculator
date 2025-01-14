@@ -65,12 +65,29 @@ void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName)
 	}
 }
 
+void displayPolynomial(vector<pair<int, double>> polynomial, char PolynomialName) {
+	cout << PolynomialName << "(x) = ";
+	for (size_t i = 0; i < polynomial.size(); ++i) {
+		if (i > 0 && polynomial[i].second > 0) {
+			cout << "+";
+		}
+		if (polynomial[i].first == 0) {
+			cout << polynomial[i].second;
+		}
+		else {
+			cout << polynomial[i].second << "x^" << polynomial[i].first;
+		}
+	}
+	cout << endl;
+}
+
 int main()
 {
 	vector<pair<int, double>> polynomial1, polynomial2, result;
 	displayMenu();
 	int option = chooseOption();
 	inputPolynomial(polynomial1, 'P');
+	displayPolynomial(polynomial1, 'P');
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
