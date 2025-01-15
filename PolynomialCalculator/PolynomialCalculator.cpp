@@ -54,7 +54,7 @@ void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName)
 	cout << "Enter degree of your polynomial>> ";
 	cin >> degree;
 
-
+	polynomial.clear();
 	for (int i = degree; i >= 0; --i) {
 		double coefficient;
 		cout << "Enter coefficient before x^" << i << ">> ";
@@ -65,17 +65,15 @@ void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName)
 	}
 }
 
-void displayPolynomial(vector<pair<int, double>> polynomial, char PolynomialName) {
+void displayPolynomial(const vector<pair<int, double>> polynomial, char PolynomialName) {
 	cout << PolynomialName << "(x) = ";
 	for (size_t i = 0; i < polynomial.size(); ++i) {
-		if (i > 0 && polynomial[i].second > 0) {
+		if (i != 0 && polynomial[i].second > 0) {
 			cout << "+";
 		}
-		if (polynomial[i].first == 0) {
-			cout << polynomial[i].second;
-		}
-		else {
-			cout << polynomial[i].second << "x^" << polynomial[i].first;
+		cout << polynomial[i].second;
+		if (polynomial[i].first != 0) {
+			cout << "x^" << polynomial[i].first;
 		}
 	}
 	cout << endl;
