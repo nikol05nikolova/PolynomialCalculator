@@ -8,7 +8,9 @@
 #include <cmath>
 
 using namespace std;
-const int MAX_LENGHT_INT = 10;
+const int MAX_LENGTH_INT = 10;
+//max lenght - 2 integers, 1 '/', and 2 '-' + '\0'
+const int MAX_LENGTH_COEFFICIENT = 2 * MAX_LENGTH_INT + 4;
 
 void clearInputBuffer() {
 	cin.clear();
