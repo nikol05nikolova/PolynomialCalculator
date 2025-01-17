@@ -123,6 +123,18 @@ int minusPosition(const char* str) {
 	return -1;
 }
 
+bool isNegative(const char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+	int minus = minusPosition(str);
+	if (minus == 2 || minus == -1)
+	{
+		return false;
+	}
+	return true;
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
