@@ -219,6 +219,16 @@ int gcdNumbers(int num1, int num2) {
 	return abs(num1);
 }
 
+pair<int, int> simplifyFraction(int numerator, int denominator) {
+	pair<int, int> result;
+	int g = gcdNumbers(abs(numerator), abs(denominator));
+	numerator /= g;
+	denominator /= g;
+	result.first = numerator;
+	result.second = denominator;
+	return result;
+}
+
 void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
@@ -243,6 +253,11 @@ void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char Polynom
 
 		if (isNegative(input)) {
 			num = 0 - num;
+		}
+
+		pair<int, int> fraction = simplifyFraction(num, den);
+		if (num != 0) {
+			polynomial.push_back({ i, fraction });
 		}
 	}
 }
