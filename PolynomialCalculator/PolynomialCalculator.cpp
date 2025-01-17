@@ -146,6 +146,29 @@ int charToInt(char ch) {
 	return ch - '0';
 }
 
+int StrToInt(char* str, size_t beg, size_t end) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int result = 0;
+	if (beg > end) {
+		return -1;
+	}
+
+	for (size_t i = beg; i < end; i++) {
+		result *= 10;
+
+		int digit = charToInt(str[i]);
+		if (digit == -1) {
+			return -1;
+		}
+
+		result += digit;
+	}
+	return result;
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
