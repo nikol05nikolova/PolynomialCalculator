@@ -135,6 +135,10 @@ bool isNegative(const char* str) {
 	return true;
 }
 
+bool isNumber(char ch) {
+	return ch >= '0' && ch <= '9';
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
