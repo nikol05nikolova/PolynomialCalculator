@@ -73,6 +73,18 @@ int chooseDegree() {
 	return degree;
 }
 
+int strLength(const char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int len = 0;
+	while (str[len] != '\0') {
+		len++;
+	}
+	return len;
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
