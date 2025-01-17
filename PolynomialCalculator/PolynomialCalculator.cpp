@@ -3,8 +3,16 @@
 
 #include <iostream>
 #include <vector>
-#include <utility>
+// For std::pair
+#include <utility> 
+#include <cmath>
+
 using namespace std;
+
+void clearInputBuffer() {
+	cin.clear();
+	while (cin.get() != '\n');
+}
 
 void displayMenu() {
 	cout << "Welcome to Polynomial Calculator - a mini project intended to work with polynomials with rational coefficients" << endl;
@@ -19,7 +27,7 @@ void displayMenu() {
 	cout << "8) Display Vieta's formulas for given polynomial" << endl;
 	cout << "9) Represent a polynomial in powers of (x + a)" << endl;
 	cout << "10) Factor polynomial and find its rational roots" << endl;
-	cout << "11) Quit program" << endl << endl;
+	cout << "11) Quit program" << endl;
 }
 
 int chooseOption() {
@@ -27,24 +35,18 @@ int chooseOption() {
 	cout << "Enter your option here>> ";
 	cin >> option;
 
-	while (option < 1 || option > 11)
+	while (cin.fail() || option < 1 || option > 11)
 	{
-		if (cin.fail())
-		{
-			cin.clear();
-			while (cin.get() != '\n');
+		if (cin.fail()) {
+			clearInputBuffer();
 			cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
 		}
-		else
-		{
+		else {
 			cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
 		}
 		cout << "Enter your option here>> ";
 		cin >> option;
 	}
-
-	cout << endl << endl;
-
 	return option;
 }
 
@@ -83,7 +85,9 @@ int main()
 {
 	vector<pair<int, double>> polynomial1, polynomial2, result;
 	displayMenu();
+	cout << endl;
 	int option = chooseOption();
+	cout << endl;
 	inputPolynomial(polynomial1, 'P');
 	displayPolynomial(polynomial1, 'P');
 }
