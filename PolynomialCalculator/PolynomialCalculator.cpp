@@ -81,12 +81,9 @@ void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName)
 
 	polynomial.clear();
 	for (int i = degree; i >= 0; --i) {
-		double coefficient;
+		char input[MAX_LENGTH_COEFFICIENT];
 		cout << "Enter coefficient before x^" << i << ">> ";
-		cin >> coefficient;
-		if (coefficient != 0) {
-			polynomial.push_back({ i, coefficient });
-		}
+		cin >> input;
 	}
 }
 
