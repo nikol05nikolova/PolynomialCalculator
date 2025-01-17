@@ -264,7 +264,7 @@ void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char Polynom
 
 void displayPolynomial(const vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
 	if (polynomial.empty()) {
-		cout << "Empty!" << endl;
+		cout << PolynomialName << "(x) is empty!" << endl;
 		return;
 	}
 
