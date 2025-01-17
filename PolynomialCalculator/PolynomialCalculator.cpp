@@ -169,6 +169,28 @@ int StrToInt(char* str, size_t beg, size_t end) {
 	return result;
 }
 
+int numerator(char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int sepatator = separatorPosition(str);
+	int minus = minusPosition(str);
+	int length = strLength(str);
+
+	if (sepatator == -1) {
+		if (minus == 0) {
+			return StrToInt(str, 1, length);
+		}
+		return StrToInt(str, 0, length);
+	}
+
+	if (minus == 0 || minus == 2) {
+		return StrToInt(str, 1, sepatator);
+	}
+	return StrToInt(str, 0, sepatator);
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
