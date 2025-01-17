@@ -8,6 +8,7 @@
 #include <cmath>
 
 using namespace std;
+const int MAX_LENGHT_INT = 10;
 
 void clearInputBuffer() {
 	cin.clear();
