@@ -99,6 +99,30 @@ int separatorPosition(const char* str) {
 	return -1;
 }
 
+int minusPosition(const char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int separator = separatorPosition(str);
+	if (separator != -1) {
+		if (str[separator + 1] == '-' && separator + 1 < strLength(str) - 1) {
+
+			if (str[0] == '-') {
+
+				return 2;
+			}
+			return 1;
+		}
+	}
+
+	if (str[0] == '-') {
+
+		return 0;
+	}
+	return -1;
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
