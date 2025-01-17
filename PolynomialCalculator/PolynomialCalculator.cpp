@@ -62,10 +62,10 @@ int chooseDegree() {
 	{
 		if (cin.fail()) {
 			clearInputBuffer();
-			cout << "Invalid input! Please choose an integer that isn't negative!" << endl << endl;
+			cout << "Invalid input! Please choose a number that isn't negative!" << endl << endl;
 		}
 		else {
-			cout << "Invalid option! Please choose an integer that isn't negative!" << endl << endl;
+			cout << "Invalid option! Please choose a number that isn't negative!" << endl << endl;
 		}
 		cout << "Enter degree of your polynomial>> ";
 		cin >> degree;
@@ -262,8 +262,37 @@ void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char Polynom
 	}
 }
 
-void displayPolynomial(vector<pair<int, pair<int, int>>> polynomial, char PolynomialName) {
+void displayPolynomial(const vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
+	if (polynomial.empty()) {
+		cout << "Empty!" << endl;
+		return;
+	}
+
 	cout << PolynomialName << "(x) = ";
+	for (size_t i = 0; i < polynomial.size(); ++i) {
+		int numerator = polynomial[i].second.first;
+		int denominator = polynomial[i].second.second;
+		int degree = polynomial[i].first;
+
+		if (i > 0 && numerator > 0) {
+			cout << "+";
+		}
+
+		if (denominator == 1) {
+			cout << numerator;
+		}
+		else {
+			cout << numerator << "/" << denominator;
+		}
+
+		if (degree > 0) {
+			cout << "x";
+			if (degree > 1) {
+				cout << "^" << degree;
+			}
+		}
+	}
+	cout << endl;
 }
 
 int main()
