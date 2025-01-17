@@ -209,6 +209,16 @@ int denominator(char* str) {
 	return StrToInt(str, sepatator + 1, length);
 }
 
+//Euclidean algorithm
+int gcdNumbers(int num1, int num2) {
+	while (num2 != 0) {
+		int temp = num2;
+		num2 = num1 % num2;
+		num1 = temp;
+	}
+	return abs(num1);
+}
+
 void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
