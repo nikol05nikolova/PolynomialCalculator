@@ -85,6 +85,20 @@ int strLength(const char* str) {
 	return len;
 }
 
+int separatorPosition(const char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int length = strLength(str);
+	for (size_t i = 0; i < length; i++) {
+		if (str[i] == '/' && i != 0 && i != length - 1) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
