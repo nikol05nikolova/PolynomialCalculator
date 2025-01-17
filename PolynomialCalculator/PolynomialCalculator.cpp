@@ -139,6 +139,13 @@ bool isNumber(char ch) {
 	return ch >= '0' && ch <= '9';
 }
 
+int charToInt(char ch) {
+	if (!isNumber(ch)) {
+		return -1;
+	}
+	return ch - '0';
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
