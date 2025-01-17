@@ -209,7 +209,7 @@ int denominator(char* str) {
 	return StrToInt(str, sepatator + 1, length);
 }
 
-void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
+void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
 	int degree = chooseDegree();
@@ -220,26 +220,30 @@ void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName)
 		char input[MAX_LENGTH_COEFFICIENT];
 		cout << "Enter coefficient before x^" << i << ">> ";
 		cin >> input;
+
+		while (numerator(input) == -1 || denominator(input) <= 0) {
+			cout << "Invalid input! Please choose a rational coefficient!" << endl << endl;
+			while (cin.get() != '\n');
+			cout << "Enter coefficient before x^" << i << ">> ";
+			cin >> input;
+		}
+
+		int num = numerator(input);
+		int den = denominator(input);
+
+		if (isNegative(input)) {
+			num = 0 - num;
+		}
 	}
 }
 
-void displayPolynomial(const vector<pair<int, double>> polynomial, char PolynomialName) {
+void displayPolynomial(vector<pair<int, pair<int, int>>> polynomial, char PolynomialName) {
 	cout << PolynomialName << "(x) = ";
-	for (size_t i = 0; i < polynomial.size(); ++i) {
-		if (i != 0 && polynomial[i].second > 0) {
-			cout << "+";
-		}
-		cout << polynomial[i].second;
-		if (polynomial[i].first != 0) {
-			cout << "x^" << polynomial[i].first;
-		}
-	}
-	cout << endl;
 }
 
 int main()
 {
-	vector<pair<int, double>> polynomial1, polynomial2, result;
+	vector<pair<int, pair<int, int>>> polynomial1, polynomial2, result;
 	displayMenu();
 	cout << endl;
 	int option = chooseOption();
