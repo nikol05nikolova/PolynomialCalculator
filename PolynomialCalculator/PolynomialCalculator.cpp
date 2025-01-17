@@ -191,6 +191,24 @@ int numerator(char* str) {
 	return StrToInt(str, 0, sepatator);
 }
 
+int denominator(char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int sepatator = separatorPosition(str);
+	int minus = minusPosition(str);
+	int length = strLength(str);
+
+	if (sepatator == -1) {
+		return 1;
+	}
+	if (minus == 1 || minus == 2) {
+		return StrToInt(str, sepatator + 2, length);
+	}
+	return StrToInt(str, sepatator + 1, length);
+}
+
 void inputPolynomial(vector<pair<int, double>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
