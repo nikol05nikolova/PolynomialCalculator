@@ -12,6 +12,8 @@ const int MAX_LENGTH_INT = 10;
 //max lenght - 2 integers, 1 '/', and 2 '-' + '\0'
 const int MAX_LENGTH_COEFFICIENT = 2 * MAX_LENGTH_INT + 4;
 
+typedef pair<int, int> Fraction;
+
 void clearInputBuffer() {
 	cin.clear();
 	while (cin.get() != '\n');
@@ -229,7 +231,7 @@ pair<int, int> simplifyFraction(int numerator, int denominator) {
 	return result;
 }
 
-void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
+void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
 	int degree = chooseDegree();
@@ -262,13 +264,13 @@ void inputPolynomial(vector<pair<int, pair<int, int>>>& polynomial, char Polynom
 	}
 }
 
-void displayPolynomial(const vector<pair<int, pair<int, int>>>& polynomial, char PolynomialName) {
+void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
 	if (polynomial.empty()) {
-		cout << PolynomialName << "(x) is empty!" << endl;
+		cout << " is empty!" << endl;
 		return;
 	}
 
-	cout << PolynomialName << "(x) = ";
+	cout << " = ";
 	for (size_t i = 0; i < polynomial.size(); ++i) {
 		int numerator = polynomial[i].second.first;
 		int denominator = polynomial[i].second.second;
@@ -279,7 +281,10 @@ void displayPolynomial(const vector<pair<int, pair<int, int>>>& polynomial, char
 		}
 
 		if (denominator == 1) {
-			cout << numerator;
+			if (numerator!=1 && numerator != -1)
+			{
+				cout << numerator;
+			}
 		}
 		else {
 			cout << numerator << "/" << denominator;
@@ -297,13 +302,22 @@ void displayPolynomial(const vector<pair<int, pair<int, int>>>& polynomial, char
 
 int main()
 {
-	vector<pair<int, pair<int, int>>> polynomial1, polynomial2, result;
+	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
 	displayMenu();
 	cout << endl;
+
 	int option = chooseOption();
 	cout << endl;
+
 	inputPolynomial(polynomial1, 'P');
-	displayPolynomial(polynomial1, 'P');
+	cout << "P(x)";
+	displayPolynomial(polynomial1);
+	cout << endl;
+
+	inputPolynomial(polynomial2, 'Q');
+	cout << "Q(x)";
+	displayPolynomial(polynomial2);
+	cout << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
