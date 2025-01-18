@@ -8,7 +8,7 @@
 #include <cmath>
 
 using namespace std;
-const int MAX_LENGTH_INT = 10;
+const int MAX_LENGTH_INT = 9;
 //max lenght - 2 integers, 1 '/', and 2 '-' + '\0'
 const int MAX_LENGTH_COEFFICIENT = 2 * MAX_LENGTH_INT + 4;
 
@@ -238,12 +238,15 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 	cout << endl;
 
 	polynomial.clear();
+	bool nonZeroFound = false;
 	for (int i = degree; i >= 0; --i) {
 		char input[MAX_LENGTH_COEFFICIENT];
 		cout << "Enter coefficient before x^" << i << ">> ";
 		cin >> input;
 
-		while (numerator(input) == -1 || denominator(input) <= 0) {
+		while (numerator(input) == -1 || denominator(input) <= 0 || 
+			separatorPosition(input) > MAX_LENGTH_INT || 
+			(separatorPosition(input) > 0 && strLength(input) - 1 - separatorPosition(input) > MAX_LENGTH_INT)) {
 			cout << "Invalid input! Please choose a rational coefficient!" << endl << endl;
 			while (cin.get() != '\n');
 			cout << "Enter coefficient before x^" << i << ">> ";
@@ -259,45 +262,51 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 
 		pair<int, int> fraction = simplifyFraction(num, den);
 		if (num != 0) {
+			nonZeroFound = true;
 			polynomial.push_back({ i, fraction });
 		}
+	}
+
+	if (!nonZeroFound) {
+		cout << "The polynomial is empty! Please enter at least one non-zero coefficient." << endl;
+		inputPolynomial(polynomial, PolynomialName);
 	}
 }
 
 void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
 	if (polynomial.empty()) {
-		cout << " is empty!" << endl;
+		cout << "0" << endl;
 		return;
 	}
 
-	cout << " = ";
 	for (size_t i = 0; i < polynomial.size(); ++i) {
 		int numerator = polynomial[i].second.first;
-		int denominator = polynomial[i].second.second;
-		int degree = polynomial[i].first;
 
-		if (i > 0 && numerator > 0) {
-			cout << "+";
-		}
+			int denominator = polynomial[i].second.second;
+			int degree = polynomial[i].first;
 
-		if (denominator == 1) {
-			if (numerator != 1 && numerator != -1 ) {
-				cout << numerator;
+			if (i > 0 && numerator > 0) {
+				cout << "+";
 			}
-			else if(degree == 0){
-				cout << numerator;
-			}
-		}
-		else {
-			cout << numerator << "/" << denominator;
-		}
 
-		if (degree > 0) {
-			cout << "x";
-			if (degree > 1) {
-				cout << "^" << degree;
+			if (denominator == 1) {
+				if ((numerator != 1 && numerator != -1) || degree == 0) {
+					cout << numerator;
+				}
+				else if (numerator == -1) {
+					cout << "-";
+				}
 			}
-		}
+			else {
+				cout << numerator << "/" << denominator;
+			}
+
+			if (degree > 0) {
+				cout << "x";
+				if (degree > 1) {
+					cout << "^" << degree;
+				}
+			}
 	}
 	cout << endl;
 }
@@ -344,7 +353,39 @@ vector<pair<int, Fraction>> addPolynomials(const vector<pair<int, Fraction>>& p1
 			++j;
 		}
 		else {
-			result.push_back({ degree1, addFractions(p1[i].second, p2[j].second) });
+			if (addFractions(p1[i].second, p2[j].second).first != 0)
+			{
+				result.push_back({ degree1, addFractions(p1[i].second, p2[j].second) });
+			}
+			++i;
+			++j;
+		}
+	}
+
+	return result;
+}
+
+// Subtraction of two polynomials
+vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
+	vector<pair<int, Fraction>> result;
+	size_t i = 0, j = 0;
+
+	while (i < p1.size() || j < p2.size()) {
+		int degree1 = p1[i].first;
+		int degree2 = p2[j].first;
+		if (i < p1.size() && (j >= p2.size() || degree1 > degree2)) {
+			result.push_back(p1[i]);
+			++i;
+		}
+		else if (j < p2.size() && (i >= p1.size() || degree1 < degree2)) {
+			result.push_back({ p2[j].first, {-p2[j].second.first, p2[j].second.second} });
+			++j;
+		}
+		else {
+			if (subtractFractions(p1[i].second, p2[j].second).first != 0)
+			{
+				result.push_back({ degree1, subtractFractions(p1[i].second, p2[j].second) });
+			}
 			++i;
 			++j;
 		}
@@ -363,19 +404,24 @@ int main()
 	cout << endl;
 
 	inputPolynomial(polynomial1, 'P');
-	cout << "P(x)";
+	cout << "P(x) = ";
 	displayPolynomial(polynomial1);
 	cout << endl;
 
 	inputPolynomial(polynomial2, 'Q');
-	cout << "Q(x)";
+	cout << "Q(x) = ";
 	displayPolynomial(polynomial2);
 	cout << endl;
 
 	switch (option) {
 	case 1:
 		result = addPolynomials(polynomial1, polynomial2);
-		cout << "P(x) + Q(x)";
+		cout << "P(x) + Q(x) = ";
+		displayPolynomial(result);
+		break;
+	case 2:
+		result = subtractPolynomials(polynomial1, polynomial2);
+		cout << "P(x) - Q(x) = ";
 		displayPolynomial(result);
 		break;
 	default: break;
