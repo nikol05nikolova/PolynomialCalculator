@@ -281,7 +281,10 @@ void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
 		}
 
 		if (denominator == 1) {
-			if (numerator != 1 && numerator != -1) {
+			if (numerator != 1 && numerator != -1 ) {
+				cout << numerator;
+			}
+			else if(degree == 0){
 				cout << numerator;
 			}
 		}
@@ -323,6 +326,33 @@ Fraction divideFractions(Fraction a, Fraction b) {
 	return simplifyFraction(numerator, denominator);
 }
 
+// Addition of two polynomials
+vector<pair<int, Fraction>> addPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
+	vector<pair<int, Fraction>> result;
+	size_t i = 0, j = 0;
+
+	while (i < p1.size() || j < p2.size()) {
+		int degree1 = p1[i].first;
+		int degree2 = p2[j].first;
+
+		if (i < p1.size() && (j >= p2.size() || degree1 > degree2)) {
+			result.push_back(p1[i]);
+			++i;
+		}
+		else if (j < p2.size() && (i >= p1.size() || degree1 < degree2)) {
+			result.push_back(p2[j]);
+			++j;
+		}
+		else {
+			result.push_back({ degree1, addFractions(p1[i].second, p2[j].second) });
+			++i;
+			++j;
+		}
+	}
+
+	return result;
+}
+
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
@@ -341,6 +371,15 @@ int main()
 	cout << "Q(x)";
 	displayPolynomial(polynomial2);
 	cout << endl;
+
+	switch (option) {
+	case 1:
+		result = addPolynomials(polynomial1, polynomial2);
+		cout << "P(x) + Q(x)";
+		displayPolynomial(result);
+		break;
+	default: break;
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
