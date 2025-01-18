@@ -317,6 +317,12 @@ Fraction multiplyFractions(Fraction a, Fraction b) {
 	return simplifyFraction(numerator, denominator);
 }
 
+Fraction divideFractions(Fraction a, Fraction b) {
+	int numerator = a.first * b.second;
+	int denominator = a.second * b.first;
+	return simplifyFraction(numerator, denominator);
+}
+
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
