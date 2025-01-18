@@ -93,7 +93,7 @@ int separatorPosition(const char* str) {
 	}
 
 	int length = strLength(str);
-	for (size_t i = 0; i < length; i++) {
+	for (int i = 0; i < length; i++) {
 		if (str[i] == '/' && i != 0 && i != length - 1) {
 			return i;
 		}
@@ -126,9 +126,6 @@ int minusPosition(const char* str) {
 }
 
 bool isNegative(const char* str) {
-	if (str == nullptr) {
-		return -2;
-	}
 	int minus = minusPosition(str);
 	if (minus == 2 || minus == -1)
 	{
@@ -273,11 +270,22 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 	}
 }
 
-void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
+bool isZeroTerm(const pair<int, Fraction>& poly) {
+	return poly.second.first == 0;
+}
+
+void removeZeroTerms(vector<pair<int, Fraction>>& poly) {
+	poly.erase(remove_if(poly.begin(), poly.end(), isZeroTerm), poly.end());
+}
+
+
+void displayPolynomial(vector<pair<int, Fraction>>& polynomial) {
 	if (polynomial.empty()) {
 		cout << "0" << endl << endl;
 		return;
 	}
+
+	removeZeroTerms(polynomial);
 
 	for (size_t i = 0; i < polynomial.size(); ++i) {
 		int numerator = polynomial[i].second.first;
@@ -367,6 +375,7 @@ vector<pair<int, Fraction>> addPolynomials(const vector<pair<int, Fraction>>& p1
 
 // Subtraction of two polynomials
 vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
+
 	vector<pair<int, Fraction>> result;
 	size_t i = 0, j = 0;
 
@@ -416,9 +425,40 @@ vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>
 	return result;
 }
 
+// Division of two polynomials
+vector<pair<int, Fraction>> dividePolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2,
+	vector<pair<int, Fraction>>& remainder) {
+
+	if (p2.empty()) {
+		cout << "Error: Division by zero polynomial is not allowed." << endl;
+		return {};
+	}
+
+	vector<pair<int, Fraction>> quotient;
+	remainder = p1;
+
+	while (!remainder.empty() && remainder[0].first >= p2[0].first) {
+		int degreeDiff = remainder[0].first - p2[0].first;
+		Fraction leadingCoeffQuotient = divideFractions(remainder[0].second, p2[0].second);
+
+		quotient.push_back(make_pair(degreeDiff, leadingCoeffQuotient));
+
+		vector<pair<int, Fraction>> temp;
+		for (size_t i = 0; i < p2.size(); ++i) {
+			Fraction scaledFraction = multiplyFractions(p2[i].second, leadingCoeffQuotient);
+			temp.push_back(make_pair(p2[i].first + degreeDiff, scaledFraction));
+		}
+
+		remainder = subtractPolynomials(remainder, temp);
+		removeZeroTerms(remainder);
+	}
+
+	return quotient;
+}
+
 int main()
 {
-	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
+	vector<pair<int, Fraction>> polynomial1, polynomial2, result, remainder;
 	int option;
 
 	while (true) {
@@ -433,13 +473,19 @@ int main()
 			break;
 		}
 
-		inputPolynomial(polynomial1, 'P');
-		cout << "P(x) = ";
-		displayPolynomial(polynomial1);
+		if (option != 4)
+		{
+			inputPolynomial(polynomial1, 'P');
+			cout << "P(x) = ";
+			displayPolynomial(polynomial1);
+		}
 
-		inputPolynomial(polynomial2, 'Q');
-		cout << "Q(x) = ";
-		displayPolynomial(polynomial2);
+		if (option < 4 || option == 7)
+		{
+			inputPolynomial(polynomial2, 'Q');
+			cout << "Q(x) = ";
+			displayPolynomial(polynomial2);
+		}
 
 		switch (option) {
 		case 1:
@@ -456,6 +502,19 @@ int main()
 			result = multiplyPolynomials(polynomial1, polynomial2);
 			cout << "P(x) * Q(x) = ";
 			displayPolynomial(result);
+			break;
+		case 4:
+			inputPolynomial(polynomial1, 'A');
+			cout << "A(x) = ";
+			displayPolynomial(polynomial1);
+			inputPolynomial(polynomial2, 'B');
+			cout << "B(x) = ";
+			displayPolynomial(polynomial2);
+			result = dividePolynomials(polynomial1, polynomial2, remainder);
+			cout << "Quotient Q(x) = ";
+			displayPolynomial(result);
+			cout << "Remainder R(x) = ";
+			displayPolynomial(remainder);
 			break;
 		default: break;
 		}
