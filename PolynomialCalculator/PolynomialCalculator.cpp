@@ -394,6 +394,28 @@ vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>
 	return result;
 }
 
+// Multiplication of two polynomials
+vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
+	vector<pair<int, Fraction>> result;
+
+	for (size_t i = 0; i < p1.size(); ++i) {
+		for (size_t j = 0; j < p2.size(); ++j) {
+			bool found = false;
+			for (size_t k = 0; k < result.size(); ++k) {
+				if (result[k].first == p1[i].first + p2[j].first) {
+					result[k].second = addFractions(result[k].second, multiplyFractions(p1[i].second, p2[j].second));
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				result.push_back({ p1[i].first + p2[j].first, multiplyFractions(p1[i].second, p2[j].second) });
+			}
+		}
+	}
+	return result;
+}
+
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
@@ -422,6 +444,11 @@ int main()
 	case 2:
 		result = subtractPolynomials(polynomial1, polynomial2);
 		cout << "P(x) - Q(x) = ";
+		displayPolynomial(result);
+		break;
+	case 3:
+		result = multiplyPolynomials(polynomial1, polynomial2);
+		cout << "P(x) * Q(x) = ";
 		displayPolynomial(result);
 		break;
 	default: break;
