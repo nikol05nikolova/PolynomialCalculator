@@ -244,8 +244,8 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 		cout << "Enter coefficient before x^" << i << ">> ";
 		cin >> input;
 
-		while (numerator(input) == -1 || denominator(input) <= 0 || 
-			separatorPosition(input) > MAX_LENGTH_INT || 
+		while (numerator(input) == -1 || denominator(input) <= 0 ||
+			separatorPosition(input) > MAX_LENGTH_INT ||
 			(separatorPosition(input) > 0 && strLength(input) - 1 - separatorPosition(input) > MAX_LENGTH_INT)) {
 			cout << "Invalid input! Please choose a rational coefficient!" << endl << endl;
 			while (cin.get() != '\n');
@@ -275,40 +275,40 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 
 void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
 	if (polynomial.empty()) {
-		cout << "0" << endl;
+		cout << "0" << endl << endl;
 		return;
 	}
 
 	for (size_t i = 0; i < polynomial.size(); ++i) {
 		int numerator = polynomial[i].second.first;
 
-			int denominator = polynomial[i].second.second;
-			int degree = polynomial[i].first;
+		int denominator = polynomial[i].second.second;
+		int degree = polynomial[i].first;
 
-			if (i > 0 && numerator > 0) {
-				cout << "+";
-			}
+		if (i > 0 && numerator > 0) {
+			cout << "+";
+		}
 
-			if (denominator == 1) {
-				if ((numerator != 1 && numerator != -1) || degree == 0) {
-					cout << numerator;
-				}
-				else if (numerator == -1) {
-					cout << "-";
-				}
+		if (denominator == 1) {
+			if ((numerator != 1 && numerator != -1) || degree == 0) {
+				cout << numerator;
 			}
-			else {
-				cout << numerator << "/" << denominator;
+			else if (numerator == -1) {
+				cout << "-";
 			}
+		}
+		else {
+			cout << numerator << "/" << denominator;
+		}
 
-			if (degree > 0) {
-				cout << "x";
-				if (degree > 1) {
-					cout << "^" << degree;
-				}
+		if (degree > 0) {
+			cout << "x";
+			if (degree > 1) {
+				cout << "^" << degree;
 			}
+		}
 	}
-	cout << endl;
+	cout << endl << endl;
 }
 
 Fraction addFractions(Fraction a, Fraction b) {
@@ -419,39 +419,46 @@ vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
-	displayMenu();
-	cout << endl;
+	int option;
 
-	int option = chooseOption();
-	cout << endl;
+	while (true) {
+		displayMenu();
+		cout << endl;
 
-	inputPolynomial(polynomial1, 'P');
-	cout << "P(x) = ";
-	displayPolynomial(polynomial1);
-	cout << endl;
+		option = chooseOption();
+		cout << endl;
 
-	inputPolynomial(polynomial2, 'Q');
-	cout << "Q(x) = ";
-	displayPolynomial(polynomial2);
-	cout << endl;
+		if (option == 11) {
+			cout << "Quiting program..." << endl;
+			break;
+		}
 
-	switch (option) {
-	case 1:
-		result = addPolynomials(polynomial1, polynomial2);
-		cout << "P(x) + Q(x) = ";
-		displayPolynomial(result);
-		break;
-	case 2:
-		result = subtractPolynomials(polynomial1, polynomial2);
-		cout << "P(x) - Q(x) = ";
-		displayPolynomial(result);
-		break;
-	case 3:
-		result = multiplyPolynomials(polynomial1, polynomial2);
-		cout << "P(x) * Q(x) = ";
-		displayPolynomial(result);
-		break;
-	default: break;
+		inputPolynomial(polynomial1, 'P');
+		cout << "P(x) = ";
+		displayPolynomial(polynomial1);
+
+		inputPolynomial(polynomial2, 'Q');
+		cout << "Q(x) = ";
+		displayPolynomial(polynomial2);
+
+		switch (option) {
+		case 1:
+			result = addPolynomials(polynomial1, polynomial2);
+			cout << "P(x) + Q(x) = ";
+			displayPolynomial(result);
+			break;
+		case 2:
+			result = subtractPolynomials(polynomial1, polynomial2);
+			cout << "P(x) - Q(x) = ";
+			displayPolynomial(result);
+			break;
+		case 3:
+			result = multiplyPolynomials(polynomial1, polynomial2);
+			cout << "P(x) * Q(x) = ";
+			displayPolynomial(result);
+			break;
+		default: break;
+		}
 	}
 }
 
