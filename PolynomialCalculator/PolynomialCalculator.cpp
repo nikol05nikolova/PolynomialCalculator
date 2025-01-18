@@ -221,7 +221,7 @@ int gcdNumbers(int num1, int num2) {
 	return abs(num1);
 }
 
-pair<int, int> simplifyFraction(int numerator, int denominator) {
+Fraction simplifyFraction(int numerator, int denominator) {
 	pair<int, int> result;
 	int g = gcdNumbers(abs(numerator), abs(denominator));
 	numerator /= g;
@@ -281,8 +281,7 @@ void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
 		}
 
 		if (denominator == 1) {
-			if (numerator!=1 && numerator != -1)
-			{
+			if (numerator != 1 && numerator != -1) {
 				cout << numerator;
 			}
 		}
@@ -298,6 +297,12 @@ void displayPolynomial(const vector<pair<int, Fraction>>& polynomial) {
 		}
 	}
 	cout << endl;
+}
+
+Fraction addFractions(Fraction a, Fraction b) {
+	int numerator = a.first * b.second + b.first * a.second;
+	int denominator = a.second * b.second;
+	return simplifyFraction(numerator, denominator);
 }
 
 int main()
