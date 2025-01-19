@@ -27,7 +27,7 @@ void displayMenu() {
 	cout << "3) Multiply polynomials" << endl;
 	cout << "4) Divide polynomials" << endl;
 	cout << "5) Multiply polynomial by scalar" << endl;
-	cout << "6) Find value of polinomial ata a given number" << endl;
+	cout << "6) Find value of polinomial at a given number" << endl;
 	cout << "7) Find GCD of two polynomials" << endl;
 	cout << "8) Display Vieta's formulas for given polynomial" << endl;
 	cout << "9) Represent a polynomial in powers of (x + a)" << endl;
@@ -265,7 +265,7 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 	}
 
 	if (!nonZeroFound) {
-		cout << "The polynomial is empty! Please enter at least one non-zero coefficient." << endl;
+		cout << "The polynomial is empty! Please enter at least one non-zero coefficient." << endl << endl;
 		inputPolynomial(polynomial, PolynomialName);
 	}
 }
@@ -400,7 +400,7 @@ vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>
 			degree1 = p1[i].first;
 		}
 
-		if (i >= p1.size()) {
+		if (j >= p2.size()) {
 			degree2 = -1;
 		}
 		else {
@@ -454,11 +454,6 @@ vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>
 vector<pair<int, Fraction>> dividePolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2,
 	vector<pair<int, Fraction>>& remainder) {
 
-	if (p2.empty()) {
-		cout << "Error: Division by zero polynomial is not allowed." << endl;
-		return {};
-	}
-
 	vector<pair<int, Fraction>> quotient;
 	remainder = p1;
 
@@ -477,8 +472,32 @@ vector<pair<int, Fraction>> dividePolynomials(const vector<pair<int, Fraction>>&
 		remainder = subtractPolynomials(remainder, temp);
 		removeZeroTerms(remainder);
 	}
-
 	return quotient;
+}
+
+Fraction inputScalar()
+{
+	char input[MAX_LENGTH_COEFFICIENT];
+	cout << "Enter rational number>> ";
+	cin >> input;
+
+	while (numerator(input) == -1 || denominator(input) <= 0 ||
+		separatorPosition(input) > MAX_LENGTH_INT ||
+		(separatorPosition(input) > 0 && strLength(input) - 1 - separatorPosition(input) > MAX_LENGTH_INT)) {
+		cout << "Invalid input! Please choose a rational number!" << endl << endl;
+		while (cin.get() != '\n');
+		cout << "Enter rational number>> ";
+		cin >> input;
+	}
+
+	int num = numerator(input);
+	int den = denominator(input);
+
+	if (isNegative(input)) {
+		num = 0 - num;
+	}
+
+	return simplifyFraction(num, den);
 }
 
 int main()
@@ -541,7 +560,9 @@ int main()
 			cout << "Remainder R(x) = ";
 			displayPolynomial(remainder);
 			break;
-		default: break;
+		case 5:
+			Fraction scalar = inputScalar();
+			break;
 		}
 	}
 }
