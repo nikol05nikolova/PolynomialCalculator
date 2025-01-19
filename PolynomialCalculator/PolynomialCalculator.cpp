@@ -485,8 +485,7 @@ vector<pair<int, Fraction>> multiplyPolynomialByScalar(const vector<pair<int, Fr
 	return result;
 }
 
-Fraction inputScalar()
-{
+Fraction inputRationalNumber() {
 	char input[MAX_LENGTH_COEFFICIENT];
 	cout << "Enter rational number>> ";
 	cin >> input;
@@ -510,9 +509,31 @@ Fraction inputScalar()
 	return simplifyFraction(num, den);
 }
 
+// Find value of polinomial at a given number
+Fraction findValue(const vector<pair<int, Fraction>>& p1, Fraction x) {
+	Fraction result = { 0, 1 };
+	for (size_t i = 0; i < p1.size(); ++i) {
+		int power = p1[i].first;
+		Fraction xPowerFraction = { p1[i].second.first, p1[i].second.second };
+		for (int j = 0; j < power; ++j) {
+			xPowerFraction = multiplyFractions(xPowerFraction,x);
+		}
+		result = addFractions(result, xPowerFraction);
+	}
+	return result;
+}
+
+void printFraction(Fraction x) {
+	cout << x.first;
+	if (x.second != 1) {
+		cout << "/" << x.second;
+	}
+}
+
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result, remainder;
+	Fraction scalar, x, valueResult;
 	int option;
 
 	while (true) {
@@ -571,10 +592,19 @@ int main()
 			displayPolynomial(remainder);
 			break;
 		case 5:
-			Fraction scalar = inputScalar();
+			scalar = inputRationalNumber();
 			result = multiplyPolynomialByScalar(polynomial1, scalar);
 			cout << "Result: ";
 			displayPolynomial(result);
+			break;
+		case 6:
+			Fraction x = inputRationalNumber();
+			Fraction valueResult = findValue(polynomial1, x);
+			cout << "P(";
+			printFraction(x);
+			cout << ") = ";
+			printFraction(valueResult);
+			cout << endl << endl;
 			break;
 		}
 	}
