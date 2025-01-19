@@ -270,12 +270,12 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 	}
 }
 
-bool isZeroTerm(const pair<int, Fraction>& poly) {
-	return poly.second.first == 0;
+bool isZeroTerm(const pair<int, Fraction>& p1) {
+	return p1.second.first == 0;
 }
 
-void removeZeroTerms(vector<pair<int, Fraction>>& poly) {
-	poly.erase(remove_if(poly.begin(), poly.end(), isZeroTerm), poly.end());
+void removeZeroTerms(vector<pair<int, Fraction>>& p1) {
+	p1.erase(remove_if(p1.begin(), p1.end(), isZeroTerm), p1.end());
 }
 
 
@@ -530,6 +530,32 @@ void printFraction(Fraction x) {
 	}
 }
 
+void Normalize(vector<pair<int, Fraction>> a) {
+	if (!a.empty()) {
+		Fraction leadingCoeff = a[0].second;
+		for (size_t i = 0; i < a.size(); i++)
+		{
+			a[i].second = divideFractions(a[i].second, leadingCoeff);
+		}
+	}
+}
+
+vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
+	vector<pair<int, Fraction>> a = p1;
+	vector<pair<int, Fraction>> b = p2;
+
+	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
+	while (!b.empty()) {
+		quotientRemainder = dividePolynomials(a, b);
+		a = b;
+		b = quotientRemainder.second;
+	}
+
+	Normalize(a);
+	
+	return a;
+}
+
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
@@ -606,6 +632,9 @@ int main()
 			cout << endl << endl;
 			break;
 		case 7:
+			result = gcdPolynomials(polynomial1, polynomial2);
+			cout << "gcd(P(x), Q(x)) = ";
+			displayPolynomial(result);
 			break;
 		}
 	}
