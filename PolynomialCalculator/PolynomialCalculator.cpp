@@ -451,11 +451,11 @@ vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>
 }
 
 // Division of two polynomials
-vector<pair<int, Fraction>> dividePolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2,
-	vector<pair<int, Fraction>>& remainder) {
+pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> dividePolynomials(const vector<pair<int, Fraction>>& p1, 
+	const vector<pair<int, Fraction>>& p2) {
 
 	vector<pair<int, Fraction>> quotient;
-	remainder = p1;
+	vector<pair<int, Fraction>> remainder = p1;
 
 	while (!remainder.empty() && remainder[0].first >= p2[0].first) {
 		int degreeDiff = remainder[0].first - p2[0].first;
@@ -472,7 +472,7 @@ vector<pair<int, Fraction>> dividePolynomials(const vector<pair<int, Fraction>>&
 		remainder = subtractPolynomials(remainder, temp);
 		removeZeroTerms(remainder);
 	}
-	return quotient;
+	return { quotient, remainder };
 }
 
 // Multiplication of polynomial and scalar
@@ -532,7 +532,8 @@ void printFraction(Fraction x) {
 
 int main()
 {
-	vector<pair<int, Fraction>> polynomial1, polynomial2, result, remainder;
+	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
+	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
 	Fraction scalar, x, valueResult;
 	int option;
 
@@ -548,15 +549,13 @@ int main()
 			break;
 		}
 
-		if (option != 4)
-		{
+		if (option != 4) {
 			inputPolynomial(polynomial1, 'P');
 			cout << "P(x) = ";
 			displayPolynomial(polynomial1);
 		}
 
-		if (option < 4 || option == 7)
-		{
+		if (option < 4 || option == 7) {
 			inputPolynomial(polynomial2, 'Q');
 			cout << "Q(x) = ";
 			displayPolynomial(polynomial2);
@@ -585,11 +584,11 @@ int main()
 			inputPolynomial(polynomial2, 'B');
 			cout << "B(x) = ";
 			displayPolynomial(polynomial2);
-			result = dividePolynomials(polynomial1, polynomial2, remainder);
+			quotientRemainder = dividePolynomials(polynomial1, polynomial2);
 			cout << "Quotient Q(x) = ";
-			displayPolynomial(result);
+			displayPolynomial(quotientRemainder.first);
 			cout << "Remainder R(x) = ";
-			displayPolynomial(remainder);
+			displayPolynomial(quotientRemainder.second);
 			break;
 		case 5:
 			scalar = inputRationalNumber();
@@ -598,13 +597,15 @@ int main()
 			displayPolynomial(result);
 			break;
 		case 6:
-			Fraction x = inputRationalNumber();
-			Fraction valueResult = findValue(polynomial1, x);
+			x = inputRationalNumber();
+			valueResult = findValue(polynomial1, x);
 			cout << "P(";
 			printFraction(x);
 			cout << ") = ";
 			printFraction(valueResult);
 			cout << endl << endl;
+			break;
+		case 7:
 			break;
 		}
 	}
