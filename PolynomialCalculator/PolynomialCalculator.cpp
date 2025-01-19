@@ -392,8 +392,21 @@ vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>
 	size_t i = 0, j = 0;
 
 	while (i < p1.size() || j < p2.size()) {
-		int degree1 = p1[i].first;
-		int degree2 = p2[j].first;
+		int degree1, degree2;
+		if (i >= p1.size()) {
+			degree1 = -1;
+		}
+		else {
+			degree1 = p1[i].first;
+		}
+
+		if (i >= p1.size()) {
+			degree2 = -1;
+		}
+		else {
+			degree2 = p2[j].first;
+		}
+
 		if (i < p1.size() && (j >= p2.size() || degree1 > degree2)) {
 			result.push_back(p1[i]);
 			++i;
