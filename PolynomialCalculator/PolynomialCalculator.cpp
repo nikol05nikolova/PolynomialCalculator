@@ -475,6 +475,16 @@ vector<pair<int, Fraction>> dividePolynomials(const vector<pair<int, Fraction>>&
 	return quotient;
 }
 
+// Multiplication of polynomial and scalar
+vector<pair<int, Fraction>> multiplyPolynomialByScalar(const vector<pair<int, Fraction>>& p1, Fraction scalar) {
+	vector<pair<int, Fraction>> result = p1;
+
+	for (size_t i = 0; i < p1.size(); ++i) {
+		result[i].second = multiplyFractions(p1[i].second, scalar);
+	}
+	return result;
+}
+
 Fraction inputScalar()
 {
 	char input[MAX_LENGTH_COEFFICIENT];
@@ -562,6 +572,9 @@ int main()
 			break;
 		case 5:
 			Fraction scalar = inputScalar();
+			result = multiplyPolynomialByScalar(polynomial1, scalar);
+			cout << "Result: ";
+			displayPolynomial(result);
 			break;
 		}
 	}
