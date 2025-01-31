@@ -14,11 +14,6 @@ const int MAX_LENGTH_COEFFICIENT = 2 * MAX_LENGTH_INT + 4;
 
 typedef pair<int, int> Fraction;
 
-void clearInputBuffer() {
-	cin.clear();
-	while (cin.get() != '\n');
-}
-
 int strLength(const char* str) {
 	if (str == nullptr) {
 		return -2;
@@ -48,7 +43,7 @@ int StrToInt(char* str, size_t beg, size_t end) {
 	}
 
 	int result = 0;
-	if (beg > end) {
+	if (beg > end || end - beg > MAX_LENGTH_INT) {
 		return -1;
 	}
 
@@ -109,21 +104,19 @@ int chooseOption() {
 }
 
 int chooseDegree() {
-	int degree;
+	char degreeStr[MAX_LENGTH_INT];
 	cout << "Enter degree of your polynomial>> ";
-	cin >> degree;
+	cin >> degreeStr;
 
-	while (cin.fail() || degree < 0)
-	{
-		if (cin.fail()) {
-			clearInputBuffer();
-			cout << "Invalid input! Please choose a positive number!" << endl << endl;
-		}
-		else {
-			cout << "Invalid option! Please choose a positive number!" << endl << endl;
-		}
+	int length = strLength(degreeStr);
+	int degree = StrToInt(degreeStr, 0, length);
+
+	while (degree < 0) {
+		cout << "Invalid degree! Please choose a positive number!" << endl << endl;
 		cout << "Enter degree of your polynomial>> ";
-		cin >> degree;
+		cin >> degreeStr;
+		length = strLength(degreeStr);
+		degree = StrToInt(degreeStr, 0, length);
 	}
 	return degree;
 }
@@ -248,17 +241,17 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 		cout << "Enter coefficient before x^" << i << ">> ";
 		cin >> input;
 
-		while (numerator(input) == -1 || denominator(input) <= 0 ||
-			separatorPosition(input) > MAX_LENGTH_INT ||
-			(separatorPosition(input) > 0 && strLength(input) - 1 - separatorPosition(input) > MAX_LENGTH_INT)) {
+		int num = numerator(input);
+		int den = denominator(input);
+
+		while (num < 0 || den <= 0) {
 			cout << "Invalid input! Please choose a rational coefficient!" << endl << endl;
 			while (cin.get() != '\n');
 			cout << "Enter coefficient before x^" << i << ">> ";
 			cin >> input;
+			num = numerator(input);
+			den = denominator(input);
 		}
-
-		int num = numerator(input);
-		int den = denominator(input);
 
 		if (isNegative(input)) {
 			num = 0 - num;
@@ -578,7 +571,7 @@ int main()
 		cout << endl;
 
 		if (option == 11) {
-			cout << "Quiting program..." << endl;
+			cout << "Exiting program..." << endl;
 			break;
 		}
 
