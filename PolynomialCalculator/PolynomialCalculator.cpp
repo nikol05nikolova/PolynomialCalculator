@@ -19,6 +19,52 @@ void clearInputBuffer() {
 	while (cin.get() != '\n');
 }
 
+int strLength(const char* str) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int len = 0;
+	while (str[len] != '\0') {
+		len++;
+	}
+	return len;
+}
+
+bool isDigit(char ch) {
+	return ch >= '0' && ch <= '9';
+}
+
+int charToInt(char ch) {
+	if (!isDigit(ch)) {
+		return -1;
+	}
+	return ch - '0';
+}
+
+int StrToInt(char* str, size_t beg, size_t end) {
+	if (str == nullptr) {
+		return -2;
+	}
+
+	int result = 0;
+	if (beg > end) {
+		return -1;
+	}
+
+	for (size_t i = beg; i < end; i++) {
+		result *= 10;
+
+		int digit = charToInt(str[i]);
+		if (digit == -1) {
+			return -1;
+		}
+
+		result += digit;
+	}
+	return result;
+}
+
 void displayMenu() {
 	cout << "Welcome to Polynomial Calculator - a mini project intended to work with polynomials with rational coefficients" << endl;
 	cout << "Choose one of the following functionalities:" << endl;
@@ -36,21 +82,28 @@ void displayMenu() {
 }
 
 int chooseOption() {
-	int option;
+	char optionStr[MAX_LENGTH_INT];
 	cout << "Enter your option here>> ";
-	cin >> option;
+	cin >> optionStr;
 
-	while (cin.fail() || option < 1 || option > 11)
+	int length = strLength(optionStr);
+
+	while (length < 1 || length > 2)
 	{
-		if (cin.fail()) {
-			clearInputBuffer();
-			cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
-		}
-		else {
-			cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
-		}
+		cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
 		cout << "Enter your option here>> ";
-		cin >> option;
+		cin >> optionStr;
+		length = strLength(optionStr);
+	}
+
+	int option = StrToInt(optionStr, 0, length);
+
+	while (option < 1 || option > 11) {
+		cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
+		cout << "Enter your option here>> ";
+		cin >> optionStr;
+		length = strLength(optionStr);
+		option = StrToInt(optionStr, 0, length);
 	}
 	return option;
 }
@@ -64,27 +117,15 @@ int chooseDegree() {
 	{
 		if (cin.fail()) {
 			clearInputBuffer();
-			cout << "Invalid input! Please choose a number that isn't negative!" << endl << endl;
+			cout << "Invalid input! Please choose a positive number!" << endl << endl;
 		}
 		else {
-			cout << "Invalid option! Please choose a number that isn't negative!" << endl << endl;
+			cout << "Invalid option! Please choose a positive number!" << endl << endl;
 		}
 		cout << "Enter degree of your polynomial>> ";
 		cin >> degree;
 	}
 	return degree;
-}
-
-int strLength(const char* str) {
-	if (str == nullptr) {
-		return -2;
-	}
-
-	int len = 0;
-	while (str[len] != '\0') {
-		len++;
-	}
-	return len;
 }
 
 int separatorPosition(const char* str) {
@@ -132,40 +173,6 @@ bool isNegative(const char* str) {
 		return false;
 	}
 	return true;
-}
-
-bool isNumber(char ch) {
-	return ch >= '0' && ch <= '9';
-}
-
-int charToInt(char ch) {
-	if (!isNumber(ch)) {
-		return -1;
-	}
-	return ch - '0';
-}
-
-int StrToInt(char* str, size_t beg, size_t end) {
-	if (str == nullptr) {
-		return -2;
-	}
-
-	int result = 0;
-	if (beg > end) {
-		return -1;
-	}
-
-	for (size_t i = beg; i < end; i++) {
-		result *= 10;
-
-		int digit = charToInt(str[i]);
-		if (digit == -1) {
-			return -1;
-		}
-
-		result += digit;
-	}
-	return result;
 }
 
 int numerator(char* str) {
@@ -451,7 +458,7 @@ vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>
 }
 
 // Division of two polynomials
-pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> dividePolynomials(const vector<pair<int, Fraction>>& p1, 
+pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> dividePolynomials(const vector<pair<int, Fraction>>& p1,
 	const vector<pair<int, Fraction>>& p2) {
 
 	vector<pair<int, Fraction>> quotient;
@@ -516,7 +523,7 @@ Fraction findValue(const vector<pair<int, Fraction>>& p1, Fraction x) {
 		int power = p1[i].first;
 		Fraction xPowerFraction = { p1[i].second.first, p1[i].second.second };
 		for (int j = 0; j < power; ++j) {
-			xPowerFraction = multiplyFractions(xPowerFraction,x);
+			xPowerFraction = multiplyFractions(xPowerFraction, x);
 		}
 		result = addFractions(result, xPowerFraction);
 	}
@@ -552,7 +559,7 @@ vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1
 	}
 
 	Normalize(a);
-	
+
 	return a;
 }
 
