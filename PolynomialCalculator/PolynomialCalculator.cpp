@@ -492,20 +492,20 @@ Fraction inputRationalNumber() {
 	cout << "Enter rational number>> ";
 	cin >> input;
 
-	while (numerator(input) == -1 || denominator(input) <= 0 ||
-		separatorPosition(input) > MAX_LENGTH_INT ||
-		(separatorPosition(input) > 0 && strLength(input) - 1 - separatorPosition(input) > MAX_LENGTH_INT)) {
+	int num = numerator(input);
+	int den = denominator(input);
+
+	while (num < 0 || den <= 0) {
 		cout << "Invalid input! Please choose a rational number!" << endl << endl;
 		while (cin.get() != '\n');
 		cout << "Enter rational number>> ";
 		cin >> input;
+		num = numerator(input);
+		den = denominator(input);
 	}
 
-	int num = numerator(input);
-	int den = denominator(input);
-
 	if (isNegative(input)) {
-		num = 0 - num;
+		num = (-1) * num;
 	}
 
 	return simplifyFraction(num, den);
@@ -532,30 +532,43 @@ void printFraction(Fraction x) {
 	}
 }
 
-void Normalize(vector<pair<int, Fraction>> a) {
-	if (!a.empty()) {
-		Fraction leadingCoeff = a[0].second;
-		for (size_t i = 0; i < a.size(); i++)
+void swapPolynomials(vector<pair<int, Fraction>>& p1, vector<pair<int, Fraction>>& p2) {
+	vector<pair<int, Fraction>> temp;
+	temp = p1;
+	p1 = p2;
+	p2 = temp;
+}
+
+void Normalize(vector<pair<int, Fraction>> p1) {
+	removeZeroTerms(p1);
+	if (!p1.empty()) {
+		Fraction leadingCoeff = p1[0].second;
+		for (size_t i = 0; i < p1.size(); i++)
 		{
-			a[i].second = divideFractions(a[i].second, leadingCoeff);
+			p1[i].second = divideFractions(p1[i].second, leadingCoeff);
 		}
 	}
 }
 
 vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
-	vector<pair<int, Fraction>> a = p1;
-	vector<pair<int, Fraction>> b = p2;
+	vector<pair<int, Fraction>> poly1 = p1;
+	vector<pair<int, Fraction>> poly2 = p2;
 
-	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
-	while (!b.empty()) {
-		quotientRemainder = dividePolynomials(a, b);
-		a = b;
-		b = quotientRemainder.second;
+	if (poly1.size() < poly2.size())
+	{
+		swapPolynomials(poly1, poly2);
 	}
 
-	Normalize(a);
+	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
+	while (!poly2.empty()) {
+		quotientRemainder = dividePolynomials(poly1, poly2);
+		poly1 = poly2;
+		poly2 = quotientRemainder.second;
+	}
 
-	return a;
+	Normalize(poly1);
+
+	return poly1;
 }
 
 int main()
