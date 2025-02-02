@@ -86,8 +86,7 @@ int chooseOption() {
 	cout << "Enter your option here>> ";
 	cin >> option;
 
-	while (cin.fail() || option < 1 || option > 11)
-	{
+	while (cin.fail() || option < 1 || option > 11) {
 		if (cin.fail()) {
 			clearInputBuffer();
 			cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
@@ -98,25 +97,29 @@ int chooseOption() {
 		cout << "Enter your option here>> ";
 		cin >> option;
 	}
+
 	clearInputBuffer();
 	return option;
 }
 
 int chooseDegree() {
-	char degreeStr[MAX_LENGTH_INT];
+	int degree;
 	cout << "Enter degree of your polynomial>> ";
-	cin >> degreeStr;
+	cin >> degree;
 
-	int length = strLength(degreeStr);
-	int degree = StrToInt(degreeStr, 0, length);
-
-	while (degree < 0) {
-		cout << "Invalid degree! Please choose a positive number!" << endl << endl;
+	while (cin.fail() || degree < 0) {
+		if (cin.fail()) {
+			clearInputBuffer();
+			cout << "Invalid input! Please choose a positive number!" << endl << endl;
+		}
+		else {
+			cout << "Invalid option! Please choose a positive number!" << endl << endl;
+		}
 		cout << "Enter degree of your polynomial>> ";
-		cin >> degreeStr;
-		length = strLength(degreeStr);
-		degree = StrToInt(degreeStr, 0, length);
+		cin >> degree;
 	}
+
+	clearInputBuffer();
 	return degree;
 }
 
