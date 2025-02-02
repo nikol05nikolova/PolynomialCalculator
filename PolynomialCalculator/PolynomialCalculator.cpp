@@ -554,8 +554,18 @@ vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1
 	vector<pair<int, Fraction>> poly1 = p1;
 	vector<pair<int, Fraction>> poly2 = p2;
 
-	if (poly1.size() < poly2.size())
-	{
+	if (poly1.size() == 1 && poly1[0].first == 0
+		&& poly2.size() == 1 && poly2[0].first == 0) {
+
+		if (poly1[0].second.second == 1 && poly2[0].second.second == 1) {
+			poly1[0].second.first = gcdNumbers(poly1[0].second.first, poly2[0].second.first);
+			return poly1;
+		}
+		poly1[0].second.first = 0;
+		return poly1;
+	}
+
+	if (poly1.size() < poly2.size()) {
 		swapPolynomials(poly1, poly2);
 	}
 
@@ -648,8 +658,13 @@ int main()
 			break;
 		case 7:
 			result = gcdPolynomials(polynomial1, polynomial2);
-			cout << "gcd(P(x), Q(x)) = ";
-			displayPolynomial(result);
+			if (!(result.size() == 1 && result[0].second.first == 0)) {
+				cout << "gcd(P(x), Q(x)) = ";
+				displayPolynomial(result);
+			}
+			else {
+				cout << "There isn't GCD!" << endl << endl;
+			}
 			break;
 		}
 	}
