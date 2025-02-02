@@ -60,6 +60,11 @@ int StrToInt(char* str, size_t beg, size_t end) {
 	return result;
 }
 
+void clearInputBuffer() {
+	cin.clear();
+	while (cin.get() != '\n');
+}
+
 void displayMenu() {
 	cout << "Welcome to Polynomial Calculator - a mini project intended to work with polynomials with rational coefficients" << endl;
 	cout << "Choose one of the following functionalities:" << endl;
@@ -77,29 +82,23 @@ void displayMenu() {
 }
 
 int chooseOption() {
-	char optionStr[MAX_LENGTH_INT];
+	int option;
 	cout << "Enter your option here>> ";
-	cin >> optionStr;
+	cin >> option;
 
-	int length = strLength(optionStr);
-
-	while (length < 1 || length > 2)
+	while (cin.fail() || option < 1 || option > 11)
 	{
-		cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
+		if (cin.fail()) {
+			clearInputBuffer();
+			cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
+		}
+		else {
+			cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
+		}
 		cout << "Enter your option here>> ";
-		cin >> optionStr;
-		length = strLength(optionStr);
+		cin >> option;
 	}
-
-	int option = StrToInt(optionStr, 0, length);
-
-	while (option < 1 || option > 11) {
-		cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
-		cout << "Enter your option here>> ";
-		cin >> optionStr;
-		length = strLength(optionStr);
-		option = StrToInt(optionStr, 0, length);
-	}
+	clearInputBuffer();
 	return option;
 }
 
@@ -254,7 +253,7 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 		}
 
 		if (isNegative(input)) {
-			num = 0 - num;
+			num = (-1) * num;
 		}
 
 		pair<int, int> fraction = simplifyFraction(num, den);
