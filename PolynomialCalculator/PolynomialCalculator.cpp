@@ -259,7 +259,7 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 			num = (-1) * num;
 		}
 
-		pair<int, int> fraction = simplifyFraction(num, den);
+		Fraction fraction = simplifyFraction(num, den);
 		if (num != 0) {
 			nonZeroFound = true;
 			polynomial.push_back({ i, fraction });
@@ -581,11 +581,54 @@ vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1
 	return poly1;
 }
 
+vector<Fraction> vietasFormulas(const vector<pair<int, Fraction>>& p1) {
+	vector<Fraction> viet;
+
+	int degree = p1[0].first;
+	Fraction leadingCoefficient = p1[0].second;
+
+	int inx = 0;
+	for (int i = degree - 1; i >= 0; --i) {
+		Fraction coeff;
+		bool found = false;
+		for (int j = 1; j <= degree; j++) {
+			if (p1[j].first == i) {
+				found = true;
+				coeff.first = p1[j].second.first;
+				coeff.second = p1[j].second.second;
+				break;
+			}
+		}
+		if (!found) {
+			coeff.first = 0;
+			coeff.second = 1;
+		}
+
+		Fraction sigma = divideFractions(coeff, leadingCoefficient);
+
+		if (sigma.second < 0) {
+			sigma.first *= -1;
+			sigma.second *= -1;
+		}
+
+		if (inx % 2 == 0) {
+			sigma.first *= -1;
+		}
+
+		viet.push_back(sigma);
+		inx++;
+	}
+
+	return viet;
+}
+
 int main()
 {
 	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
 	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
 	Fraction scalar, x, valueResult;
+	vector<Fraction> viet;
+
 	int option;
 
 	while (true) {
@@ -666,6 +709,20 @@ int main()
 				cout << "There isn't GCD!" << endl << endl;
 			}
 			break;
+		case 8:
+			if (polynomial1[0].first == 0) {
+				cout << "There aren't Vieta's Formulas!" << endl << endl;
+				break;
+			}
+
+			cout << "Vieta's Formulas for this polynomial:" << endl;
+			viet = vietasFormulas(polynomial1);
+			for (size_t i = 0; i < viet.size(); i++) {
+				cout << "Sigma" << i + 1 << " = ";
+				printFraction(viet[i]);
+				cout << endl;
+			}
+			cout << endl;
 		}
 	}
 }
