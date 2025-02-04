@@ -668,7 +668,46 @@ Polynomial PowersOfXA(const Polynomial& p1) {
 	return result;
 }
 
-//Factor polynomial and find its rational roots
+//Find dividers of a number
+vector<Fraction> dividers(int a) {
+	vector<Fraction> result;
+
+	int abs_a = abs(a);
+	for (int i = 1; i <= abs_a; ++i) {
+		if (a % i == 0) {
+			result.push_back(Fraction(i, 1));
+			result.push_back(Fraction(i * (-1), 1));
+		}
+	}
+
+	return result;
+}
+
+//Bring to a common denumerator
+Polynomial commonDenumerator(const Polynomial& p1)	{
+	Polynomial result;
+	result.resize(p1.size());
+
+	int comDen = p1[0].second.second;
+	int gcd = 1;
+	int commonGcd = p1[0].second.second;
+
+	for (size_t i = 1; i < p1.size(); i++)
+	{
+		int den = p1[i].second.second;
+		commonGcd = gcdNumbers(commonGcd, den);
+		gcd = gcdNumbers(comDen, den);
+		comDen *= den / gcd;
+	}
+
+	for (size_t i = 0; i < p1.size(); i++)
+	{
+		result[i].first = p1[i].first;
+		result[i].second.first = p1[i].second.first * comDen / commonGcd / p1[i].second.second;
+		result[i].second.second = 1;
+	}
+	return result;
+}
 
 int main()
 {
@@ -774,6 +813,7 @@ int main()
 		case 9:
 			break;
 		case 10:
+			displayPolynomial(commonDenumerator(polynomial1));
 			break;
 		case 11:
 			k = inputK();
