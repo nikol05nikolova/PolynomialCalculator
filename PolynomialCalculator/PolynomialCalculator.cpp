@@ -106,7 +106,7 @@ int chooseDegree() {
 
 	while (cin.fail() || degree < 0) {
 		clearInputBuffer();
-		cout << "Invalid input! Please choose a positive number!" << endl << endl;
+		cout << "Invalid input! Please choose a positive number or 0!" << endl << endl;
 		cout << "Enter degree of your polynomial>> ";
 		cin >> degree;
 	}
@@ -274,12 +274,12 @@ void removeZeroTerms(Polynomial& p1) {
 
 
 void displayPolynomial(Polynomial polynomial) {
+	removeZeroTerms(polynomial);
+
 	if (polynomial.empty()) {
 		cout << "0" << endl << endl;
 		return;
 	}
-
-	removeZeroTerms(polynomial);
 
 	for (size_t i = 0; i < polynomial.size(); ++i) {
 		int numerator = polynomial[i].second.first;
@@ -598,6 +598,48 @@ vector<Fraction> vietasFormulas(const Polynomial& p1) {
 	return viet;
 }
 
+int inputK() {
+	int k;
+	cout << "Enter a number k >> ";
+	cin >> k;
+
+	while (cin.fail() || k < 1) {
+		clearInputBuffer();
+		cout << "Invalid input! Please choose a positive number!" << endl << endl;
+		cout << "Enter degree of your polynomial>> ";
+		cin >> k;
+	}
+	clearInputBuffer();
+	return k;
+}
+
+
+Polynomial Derivative(const Polynomial& p1) {
+	Polynomial result;
+	result.resize(p1.size());
+
+	for (size_t i = 0; i < p1.size(); i++) {
+		int degree = p1[i].first;
+		if (degree == 0) {
+			break;
+		}
+		result[i].first = degree - 1;
+		result[i].second = p1[i].second;
+		result[i].second.first *= degree;
+		result[i].second = simplifyFraction(result[i].second.first, result[i].second.second);
+	}
+
+	return result;
+}
+
+Polynomial kthDerivative(const Polynomial& p1, int k) {
+	Polynomial result = Derivative(p1);
+	for (size_t i = 1; i < k; i++) {
+		result = Derivative(result);
+	}
+	return result;
+}
+
 int main()
 {
 	Polynomial polynomial1, polynomial2, result;
@@ -713,16 +755,10 @@ int main()
 		case 10:
 			break;
 		case 11:
-			cout << "Enter a number k >> ";
-			cin >> k;
-
-			while (cin.fail() || k < 0) {
-				clearInputBuffer();
-				cout << "Invalid input! Please choose a positive number!" << endl << endl;
-				cout << "Enter degree of your polynomial>> ";
-				cin >> k;
-			}
-			clearInputBuffer();
+			k = inputK();
+			result = kthDerivative(polynomial1, k);
+			cout << k <<"-th derivative is: ";
+			displayPolynomial(result);
 			break;
 		}
 	}
