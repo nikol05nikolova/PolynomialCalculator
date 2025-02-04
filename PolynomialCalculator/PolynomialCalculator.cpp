@@ -79,7 +79,7 @@ void displayMenu() {
 	cout << "8) Display Vieta's formulas for given polynomial" << endl;
 	cout << "9) Represent a polynomial in powers of (x + a)" << endl;
 	cout << "10) Factor polynomial and find its rational roots" << endl;
-	cout << "11) Search for k-th derivative" << endl;
+	cout << "11) Find k-th derivative" << endl;
 	cout << "12) Quit program" << endl;
 }
 
@@ -541,6 +541,7 @@ void Normalize(Polynomial& p1) {
 	}
 }
 
+// Find GCD of two polynomials
 Polynomial gcdPolynomials(const Polynomial& p1, const Polynomial& p2) {
 	Polynomial poly1 = p1;
 	Polynomial poly2 = p2;
@@ -579,6 +580,7 @@ void NormalizeMinus(Fraction coef) {
 	}
 }
 
+//Vieta's formulas for given polynomial
 vector<Fraction> vietasFormulas(const Polynomial& p1) {
 	vector<Fraction> viet;
 
@@ -596,6 +598,20 @@ vector<Fraction> vietasFormulas(const Polynomial& p1) {
 		viet.push_back(sigma);
 	}
 	return viet;
+}
+
+//Display Vieta's formulas
+void displayVietasFormulas(const Polynomial& p1) {
+	vector<Fraction> viet;
+
+	cout << "Vieta's Formulas for this polynomial:" << endl;
+	viet = vietasFormulas(p1);
+	for (size_t i = 0; i < viet.size(); i++) {
+		cout << "Sigma" << i + 1 << " = ";
+		printFraction(viet[i]);
+		cout << endl;
+	}
+	cout << endl;
 }
 
 int inputK() {
@@ -632,6 +648,7 @@ Polynomial Derivative(const Polynomial& p1) {
 	return result;
 }
 
+//Find kth derivative
 Polynomial kthDerivative(const Polynomial& p1, int k) {
 	Polynomial result = Derivative(p1);
 	for (size_t i = 1; i < k; i++) {
@@ -645,7 +662,6 @@ int main()
 	Polynomial polynomial1, polynomial2, result;
 	pair<Polynomial, Polynomial> quotientRemainder;
 	Fraction scalar, x, valueResult;
-	vector<Fraction> viet;
 	int k;
 
 	int option;
@@ -740,15 +756,7 @@ int main()
 				cout << "There aren't Vieta's Formulas!" << endl << endl;
 				break;
 			}
-
-			cout << "Vieta's Formulas for this polynomial:" << endl;
-			viet = vietasFormulas(polynomial1);
-			for (size_t i = 0; i < viet.size(); i++) {
-				cout << "Sigma" << i + 1 << " = ";
-				printFraction(viet[i]);
-				cout << endl;
-			}
-			cout << endl;
+			displayVietasFormulas(polynomial1);
 			break;
 		case 9:
 			break;
