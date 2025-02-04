@@ -316,25 +316,38 @@ void displayPolynomial(Polynomial polynomial) {
 Fraction addFractions(Fraction a, Fraction b) {
 	int numerator = a.first * b.second + b.first * a.second;
 	int denominator = a.second * b.second;
-	return simplifyFraction(numerator, denominator);
+	Fraction f = simplifyFraction(numerator, denominator);
+	return f;
 }
 
 Fraction subtractFractions(Fraction a, Fraction b) {
 	int numerator = a.first * b.second - b.first * a.second;
 	int denominator = a.second * b.second;
-	return simplifyFraction(numerator, denominator);
+	Fraction f = simplifyFraction(numerator, denominator);
+	return f;
+}
+
+void normalizeMinus(Fraction& coef) {
+	if (coef.second < 0) {
+		coef.first *= -1;
+		coef.second *= -1;
+	}
 }
 
 Fraction multiplyFractions(Fraction a, Fraction b) {
 	int numerator = a.first * b.first;
 	int denominator = a.second * b.second;
-	return simplifyFraction(numerator, denominator);
+	Fraction f = simplifyFraction(numerator, denominator);
+	normalizeMinus(f);
+	return f;
 }
 
 Fraction divideFractions(Fraction a, Fraction b) {
 	int numerator = a.first * b.second;
 	int denominator = a.second * b.first;
-	return simplifyFraction(numerator, denominator);
+	Fraction f = simplifyFraction(numerator, denominator);
+	normalizeMinus(f);
+	return f;
 }
 
 // Addition of two polynomials
@@ -530,7 +543,7 @@ void swapPolynomials(Polynomial& p1, Polynomial& p2) {
 	p2 = temp;
 }
 
-void Normalize(Polynomial& p1) {
+void normalize(Polynomial& p1) {
 	removeZeroTerms(p1);
 	if (!p1.empty()) {
 		Fraction leadingCoeff = p1[0].second;
@@ -568,16 +581,9 @@ Polynomial gcdPolynomials(const Polynomial& p1, const Polynomial& p2) {
 		poly2 = quotientRemainder.second;
 	}
 
-	Normalize(poly1);
+	normalize(poly1);
 
 	return poly1;
-}
-
-void NormalizeMinus(Fraction coef) {
-	if (coef.second < 0) {
-		coef.first *= -1;
-		coef.second *= -1;
-	}
 }
 
 //Vieta's formulas for given polynomial
@@ -590,11 +596,10 @@ vector<Fraction> vietasFormulas(const Polynomial& p1) {
 	for (int i = 1; i < p1.size(); i++) {
 		Fraction sigma = divideFractions(p1[i].second, leadingCoefficient);
 
-		NormalizeMinus(sigma);
-
 		if (i % 2 != 0) {
 			sigma.first *= -1;
 		}
+
 		viet.push_back(sigma);
 	}
 	return viet;
@@ -656,6 +661,14 @@ Polynomial kthDerivative(const Polynomial& p1, int k) {
 	}
 	return result;
 }
+
+//Represent a polynomial in powers of (x + a)
+Polynomial PowersOfXA(const Polynomial& p1) {
+	Polynomial result = p1;
+	return result;
+}
+
+//Factor polynomial and find its rational roots
 
 int main()
 {
