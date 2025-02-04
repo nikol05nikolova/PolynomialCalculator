@@ -13,6 +13,7 @@ const int MAX_LENGTH_INT = 9;
 const int MAX_LENGTH_COEFFICIENT = 2 * MAX_LENGTH_INT + 4;
 
 typedef pair<int, int> Fraction;
+typedef vector<pair<int, Fraction>> Polynomial;
 
 int strLength(const char* str) {
 	if (str == nullptr) {
@@ -78,7 +79,8 @@ void displayMenu() {
 	cout << "8) Display Vieta's formulas for given polynomial" << endl;
 	cout << "9) Represent a polynomial in powers of (x + a)" << endl;
 	cout << "10) Factor polynomial and find its rational roots" << endl;
-	cout << "11) Quit program" << endl;
+	cout << "11) Search for k-th derivative" << endl;
+	cout << "12) Quit program" << endl;
 }
 
 int chooseOption() {
@@ -86,7 +88,7 @@ int chooseOption() {
 	cout << "Enter your option here>> ";
 	cin >> option;
 
-	while (cin.fail() || option < 1 || option > 11) {
+	while (cin.fail() || option < 1 || option > 12) {
 		clearInputBuffer();
 		cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
 		cout << "Enter your option here>> ";
@@ -220,7 +222,7 @@ Fraction simplifyFraction(int numerator, int denominator) {
 	return result;
 }
 
-void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialName) {
+void inputPolynomial(Polynomial& polynomial, char PolynomialName) {
 	cout << "Enter Polynomial " << PolynomialName << "(x)" << endl;
 
 	int degree = chooseDegree();
@@ -266,12 +268,12 @@ bool isZeroTerm(const pair<int, Fraction>& p1) {
 	return p1.second.first == 0;
 }
 
-void removeZeroTerms(vector<pair<int, Fraction>>& p1) {
+void removeZeroTerms(Polynomial& p1) {
 	p1.erase(remove_if(p1.begin(), p1.end(), isZeroTerm), p1.end());
 }
 
 
-void displayPolynomial(vector<pair<int, Fraction>> polynomial) {
+void displayPolynomial(Polynomial polynomial) {
 	if (polynomial.empty()) {
 		cout << "0" << endl << endl;
 		return;
@@ -336,8 +338,8 @@ Fraction divideFractions(Fraction a, Fraction b) {
 }
 
 // Addition of two polynomials
-vector<pair<int, Fraction>> addPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
-	vector<pair<int, Fraction>> result;
+Polynomial addPolynomials(const Polynomial& p1, const Polynomial& p2) {
+	Polynomial result;
 	size_t i = 0, j = 0;
 
 	while (i < p1.size() || j < p2.size()) {
@@ -378,9 +380,9 @@ vector<pair<int, Fraction>> addPolynomials(const vector<pair<int, Fraction>>& p1
 }
 
 // Subtraction of two polynomials
-vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
+Polynomial subtractPolynomials(const Polynomial& p1, const Polynomial& p2) {
 
-	vector<pair<int, Fraction>> result;
+	Polynomial result;
 	size_t i = 0, j = 0;
 
 	while (i < p1.size() || j < p2.size()) {
@@ -421,8 +423,8 @@ vector<pair<int, Fraction>> subtractPolynomials(const vector<pair<int, Fraction>
 }
 
 // Multiplication of two polynomials
-vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
-	vector<pair<int, Fraction>> result;
+Polynomial multiplyPolynomials(const Polynomial& p1, const Polynomial& p2) {
+	Polynomial result;
 
 	for (size_t i = 0; i < p1.size(); ++i) {
 		for (size_t j = 0; j < p2.size(); ++j) {
@@ -443,11 +445,10 @@ vector<pair<int, Fraction>> multiplyPolynomials(const vector<pair<int, Fraction>
 }
 
 // Division of two polynomials
-pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> dividePolynomials(const vector<pair<int, Fraction>>& p1,
-	const vector<pair<int, Fraction>>& p2) {
+pair<Polynomial, Polynomial> dividePolynomials(const Polynomial& p1, const Polynomial& p2) {
 
-	vector<pair<int, Fraction>> quotient;
-	vector<pair<int, Fraction>> remainder = p1;
+	Polynomial quotient;
+	Polynomial remainder = p1;
 
 	while (!remainder.empty() && remainder[0].first >= p2[0].first) {
 		int degreeDiff = remainder[0].first - p2[0].first;
@@ -455,7 +456,7 @@ pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> dividePolynomials
 
 		quotient.push_back(make_pair(degreeDiff, leadingCoeffQuotient));
 
-		vector<pair<int, Fraction>> temp;
+		Polynomial temp;
 		for (size_t i = 0; i < p2.size(); ++i) {
 			Fraction scaledFraction = multiplyFractions(p2[i].second, leadingCoeffQuotient);
 			temp.push_back(make_pair(p2[i].first + degreeDiff, scaledFraction));
@@ -468,8 +469,8 @@ pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> dividePolynomials
 }
 
 // Multiplication of polynomial and scalar
-vector<pair<int, Fraction>> multiplyPolynomialByScalar(const vector<pair<int, Fraction>>& p1, Fraction scalar) {
-	vector<pair<int, Fraction>> result = p1;
+Polynomial multiplyPolynomialByScalar(const Polynomial& p1, Fraction scalar) {
+	Polynomial result = p1;
 
 	for (size_t i = 0; i < p1.size(); ++i) {
 		result[i].second = multiplyFractions(p1[i].second, scalar);
@@ -502,7 +503,7 @@ Fraction inputRationalNumber() {
 }
 
 // Find value of polinomial at a given number
-Fraction findValue(const vector<pair<int, Fraction>>& p1, Fraction x) {
+Fraction findValue(const Polynomial& p1, Fraction x) {
 	Fraction result = { 0, 1 };
 	for (size_t i = 0; i < p1.size(); ++i) {
 		int power = p1[i].first;
@@ -522,14 +523,14 @@ void printFraction(Fraction x) {
 	}
 }
 
-void swapPolynomials(vector<pair<int, Fraction>>& p1, vector<pair<int, Fraction>>& p2) {
-	vector<pair<int, Fraction>> temp;
+void swapPolynomials(Polynomial& p1, Polynomial& p2) {
+	Polynomial temp;
 	temp = p1;
 	p1 = p2;
 	p2 = temp;
 }
 
-void Normalize(vector<pair<int, Fraction>>& p1) {
+void Normalize(Polynomial& p1) {
 	removeZeroTerms(p1);
 	if (!p1.empty()) {
 		Fraction leadingCoeff = p1[0].second;
@@ -540,9 +541,9 @@ void Normalize(vector<pair<int, Fraction>>& p1) {
 	}
 }
 
-vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1, const vector<pair<int, Fraction>>& p2) {
-	vector<pair<int, Fraction>> poly1 = p1;
-	vector<pair<int, Fraction>> poly2 = p2;
+Polynomial gcdPolynomials(const Polynomial& p1, const Polynomial& p2) {
+	Polynomial poly1 = p1;
+	Polynomial poly2 = p2;
 
 	if (poly1.size() == 1 && poly1[0].first == 0
 		&& poly2.size() == 1 && poly2[0].first == 0) {
@@ -559,7 +560,7 @@ vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1
 		swapPolynomials(poly1, poly2);
 	}
 
-	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
+	pair<Polynomial, Polynomial> quotientRemainder;
 	while (!poly2.empty()) {
 		quotientRemainder = dividePolynomials(poly1, poly2);
 		poly1 = poly2;
@@ -571,7 +572,14 @@ vector<pair<int, Fraction>> gcdPolynomials(const vector<pair<int, Fraction>>& p1
 	return poly1;
 }
 
-vector<Fraction> vietasFormulas(const vector<pair<int, Fraction>>& p1) {
+void NormalizeMinus(Fraction coef) {
+	if (coef.second < 0) {
+		coef.first *= -1;
+		coef.second *= -1;
+	}
+}
+
+vector<Fraction> vietasFormulas(const Polynomial& p1) {
 	vector<Fraction> viet;
 
 	int degree = p1[0].first;
@@ -580,27 +588,23 @@ vector<Fraction> vietasFormulas(const vector<pair<int, Fraction>>& p1) {
 	for (int i = 1; i < p1.size(); i++) {
 		Fraction sigma = divideFractions(p1[i].second, leadingCoefficient);
 
-		if (sigma.second < 0) {
-			sigma.first *= -1;
-			sigma.second *= -1;
-		}
+		NormalizeMinus(sigma);
 
-		if ((i-1) % 2 == 0) {
+		if (i % 2 != 0) {
 			sigma.first *= -1;
 		}
-
 		viet.push_back(sigma);
 	}
-
 	return viet;
 }
 
 int main()
 {
-	vector<pair<int, Fraction>> polynomial1, polynomial2, result;
-	pair<vector<pair<int, Fraction>>, vector<pair<int, Fraction>>> quotientRemainder;
+	Polynomial polynomial1, polynomial2, result;
+	pair<Polynomial, Polynomial> quotientRemainder;
 	Fraction scalar, x, valueResult;
 	vector<Fraction> viet;
+	int k;
 
 	int option;
 
@@ -611,7 +615,7 @@ int main()
 		option = chooseOption();
 		cout << endl;
 
-		if (option == 11) {
+		if (option == 12) {
 			cout << "Exiting program..." << endl;
 			break;
 		}
@@ -703,6 +707,23 @@ int main()
 				cout << endl;
 			}
 			cout << endl;
+			break;
+		case 9:
+			break;
+		case 10:
+			break;
+		case 11:
+			cout << "Enter a number k >> ";
+			cin >> k;
+
+			while (cin.fail() || k < 0) {
+				clearInputBuffer();
+				cout << "Invalid input! Please choose a positive number!" << endl << endl;
+				cout << "Enter degree of your polynomial>> ";
+				cin >> k;
+			}
+			clearInputBuffer();
+			break;
 		}
 	}
 }
