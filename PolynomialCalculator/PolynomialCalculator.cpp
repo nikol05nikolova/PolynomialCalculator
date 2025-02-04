@@ -1,5 +1,16 @@
-// PolynomialCalculator.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+/**
+* Solution to course project # 4
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2024 / 2025
+*
+* @author Nikol Nikolova
+* @idnumber 1MI0600495
+* @compiler VC
+*
+* <file with all functions and main>
+*
+*/
 
 #include <iostream>
 #include <vector>
@@ -14,6 +25,20 @@ const int MAX_LENGTH_COEFFICIENT = 2 * MAX_LENGTH_INT + 4;
 
 typedef pair<int, int> Fraction;
 typedef vector<pair<int, Fraction>> Polynomial;
+
+void printFraction(Fraction x) {
+	cout << x.first;
+	if (x.second != 1) {
+		cout << "/" << x.second;
+	}
+}
+
+void normalizeMinus(Fraction& coef) {
+	if (coef.second < 0) {
+		coef.first *= -1;
+		coef.second *= -1;
+	}
+}
 
 int strLength(const char* str) {
 	if (str == nullptr) {
@@ -219,6 +244,7 @@ Fraction simplifyFraction(int numerator, int denominator) {
 	denominator /= g;
 	result.first = numerator;
 	result.second = denominator;
+	normalizeMinus(result);
 	return result;
 }
 
@@ -327,18 +353,10 @@ Fraction subtractFractions(Fraction a, Fraction b) {
 	return f;
 }
 
-void normalizeMinus(Fraction& coef) {
-	if (coef.second < 0) {
-		coef.first *= -1;
-		coef.second *= -1;
-	}
-}
-
 Fraction multiplyFractions(Fraction a, Fraction b) {
 	int numerator = a.first * b.first;
 	int denominator = a.second * b.second;
 	Fraction f = simplifyFraction(numerator, denominator);
-	normalizeMinus(f);
 	return f;
 }
 
@@ -346,7 +364,6 @@ Fraction divideFractions(Fraction a, Fraction b) {
 	int numerator = a.first * b.second;
 	int denominator = a.second * b.first;
 	Fraction f = simplifyFraction(numerator, denominator);
-	normalizeMinus(f);
 	return f;
 }
 
@@ -529,13 +546,6 @@ Fraction findValue(const Polynomial& p1, Fraction x) {
 	return result;
 }
 
-void printFraction(Fraction x) {
-	cout << x.first;
-	if (x.second != 1) {
-		cout << "/" << x.second;
-	}
-}
-
 void swapPolynomials(Polynomial& p1, Polynomial& p2) {
 	Polynomial temp;
 	temp = p1;
@@ -662,21 +672,15 @@ Polynomial kthDerivative(const Polynomial& p1, int k) {
 	return result;
 }
 
-//Represent a polynomial in powers of (x + a)
-Polynomial PowersOfXA(const Polynomial& p1) {
-	Polynomial result = p1;
-	return result;
-}
-
 //Find dividers of a number
-vector<Fraction> dividers(int a) {
-	vector<Fraction> result;
+vector<int> dividers(int a) {
+	vector<int> result;
 
 	int abs_a = abs(a);
 	for (int i = 1; i <= abs_a; ++i) {
 		if (a % i == 0) {
-			result.push_back(Fraction(i, 1));
-			result.push_back(Fraction(i * (-1), 1));
+			result.push_back(i);
+			result.push_back(i * (-1));
 		}
 	}
 
@@ -684,29 +688,118 @@ vector<Fraction> dividers(int a) {
 }
 
 //Bring to a common denumerator
-Polynomial commonDenumerator(const Polynomial& p1)	{
-	Polynomial result;
+vector<pair<int, int>> commonDenumerator(const Polynomial& p1) {
+	vector<pair<int, int>> result;
 	result.resize(p1.size());
 
 	int comDen = p1[0].second.second;
 	int gcd = 1;
 	int commonGcd = p1[0].second.second;
 
-	for (size_t i = 1; i < p1.size(); i++)
-	{
+	for (size_t i = 1; i < p1.size(); i++) {
 		int den = p1[i].second.second;
 		commonGcd = gcdNumbers(commonGcd, den);
 		gcd = gcdNumbers(comDen, den);
 		comDen *= den / gcd;
 	}
 
-	for (size_t i = 0; i < p1.size(); i++)
-	{
+	for (size_t i = 0; i < p1.size(); i++) {
 		result[i].first = p1[i].first;
-		result[i].second.first = p1[i].second.first * comDen / commonGcd / p1[i].second.second;
-		result[i].second.second = 1;
+		result[i].second = p1[i].second.first * comDen / commonGcd / p1[i].second.second;
 	}
 	return result;
+}
+
+//Find posible roots of polynomial(Horner first and last coefficient)
+vector<Fraction> posibleRoots(const Polynomial& p1) {
+	vector<Fraction> posibRoots;
+	vector<pair<int, int>> comDenPoly = commonDenumerator(p1);
+	int first = comDenPoly[0].second;
+	int last = comDenPoly[comDenPoly.size() - 1].second;
+
+	vector<int> dividersFirst = dividers(first);
+	vector<int> dividersLast = dividers(last);
+
+	for (size_t i = 0; i < dividersFirst.size(); i++)
+	{
+		for (size_t j = 0; j < dividersLast.size(); j++)
+		{
+			Fraction root = simplifyFraction(dividersLast[j], dividersFirst[i]);
+			bool found = false;
+			for (size_t k = 0; k < posibRoots.size(); k++)
+			{
+				if (posibRoots[k] == root)
+				{
+					found = true;
+				}
+			}
+			if (!found)
+			{
+				posibRoots.push_back(root);
+			}
+		}
+	}
+	return posibRoots;
+}
+
+//Find rational roots of polynomial
+Polynomial rationalRoots(const Polynomial& p1) {
+	vector<Fraction> posibRoots = posibleRoots(p1);
+	Polynomial ratRoots;
+
+	for (size_t i = 0; i < posibRoots.size(); i++) {
+		if (findValue(p1, posibRoots[i]).first == 0) {
+			int k = 1;
+			Polynomial divider, poly;
+			divider.resize(2);
+			divider[0] = { 1, {1,1} };
+			divider[1] = { 0, posibRoots[i] };
+			divider[1].second.first *= -1;
+			poly = dividePolynomials(p1, divider).first;
+			while (findValue(poly, posibRoots[i]).first == 0) {
+				k++;
+				poly = dividePolynomials(poly, divider).first;
+			}
+			
+			ratRoots.push_back({ k, posibRoots[i] });
+		}
+	}
+
+	return ratRoots;
+}
+
+void displayRationalRoots(const Polynomial& p1) {
+	Polynomial ratRoots = rationalRoots(p1);
+
+	if (ratRoots.empty()) {
+		cout << "No rational roots" << endl << endl;
+		return;
+	}
+
+	for (size_t i = 0; i < ratRoots.size(); i++) {
+		ratRoots[i].second.first *= -1;
+		cout << "(x";
+		if (ratRoots[i].second.first > 0)
+		{
+			cout << "+";
+		}
+		printFraction(ratRoots[i].second);
+		cout << ")";
+		int k = ratRoots[i].first;
+		if (ratRoots[i].first > 1)
+		{
+			cout << "^"<< ratRoots[i].first;
+		}
+	}
+	cout << "=0" << endl << endl;
+
+	cout << "RATIONAL ROOTS:" << endl;
+	for (size_t i = 0; i < ratRoots.size(); i++) {
+		cout << "x = ";
+		printFraction(ratRoots[i].second);
+		cout << " -> " << ratRoots[i].first << "-fold root" << endl;
+	}
+	cout << endl;
 }
 
 int main()
@@ -811,27 +904,17 @@ int main()
 			displayVietasFormulas(polynomial1);
 			break;
 		case 9:
+			cout << "Undergoing development process!!!";
 			break;
 		case 10:
-			displayPolynomial(commonDenumerator(polynomial1));
+			displayRationalRoots(polynomial1);
 			break;
 		case 11:
 			k = inputK();
 			result = kthDerivative(polynomial1, k);
-			cout << k <<"-th derivative is: ";
+			cout << k << "-th derivative is: ";
 			displayPolynomial(result);
 			break;
 		}
 	}
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
