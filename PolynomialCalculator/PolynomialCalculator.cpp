@@ -87,13 +87,8 @@ int chooseOption() {
 	cin >> option;
 
 	while (cin.fail() || option < 1 || option > 11) {
-		if (cin.fail()) {
-			clearInputBuffer();
-			cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
-		}
-		else {
-			cout << "Invalid option! Please choose a number between 1 and 11!" << endl << endl;
-		}
+		clearInputBuffer();
+		cout << "Invalid input! Please choose a number between 1 and 11!" << endl << endl;
 		cout << "Enter your option here>> ";
 		cin >> option;
 	}
@@ -108,13 +103,8 @@ int chooseDegree() {
 	cin >> degree;
 
 	while (cin.fail() || degree < 0) {
-		if (cin.fail()) {
-			clearInputBuffer();
-			cout << "Invalid input! Please choose a positive number!" << endl << endl;
-		}
-		else {
-			cout << "Invalid option! Please choose a positive number!" << endl << endl;
-		}
+		clearInputBuffer();
+		cout << "Invalid input! Please choose a positive number!" << endl << endl;
 		cout << "Enter degree of your polynomial>> ";
 		cin >> degree;
 	}
@@ -262,8 +252,8 @@ void inputPolynomial(vector<pair<int, Fraction>>& polynomial, char PolynomialNam
 		Fraction fraction = simplifyFraction(num, den);
 		if (num != 0) {
 			nonZeroFound = true;
-			polynomial.push_back({ i, fraction });
 		}
+		polynomial.push_back({ i, fraction });
 	}
 
 	if (!nonZeroFound) {
@@ -281,7 +271,7 @@ void removeZeroTerms(vector<pair<int, Fraction>>& p1) {
 }
 
 
-void displayPolynomial(vector<pair<int, Fraction>>& polynomial) {
+void displayPolynomial(vector<pair<int, Fraction>> polynomial) {
 	if (polynomial.empty()) {
 		cout << "0" << endl << endl;
 		return;
@@ -539,7 +529,7 @@ void swapPolynomials(vector<pair<int, Fraction>>& p1, vector<pair<int, Fraction>
 	p2 = temp;
 }
 
-void Normalize(vector<pair<int, Fraction>> p1) {
+void Normalize(vector<pair<int, Fraction>>& p1) {
 	removeZeroTerms(p1);
 	if (!p1.empty()) {
 		Fraction leadingCoeff = p1[0].second;
@@ -587,36 +577,19 @@ vector<Fraction> vietasFormulas(const vector<pair<int, Fraction>>& p1) {
 	int degree = p1[0].first;
 	Fraction leadingCoefficient = p1[0].second;
 
-	int inx = 0;
-	for (int i = degree - 1; i >= 0; --i) {
-		Fraction coeff;
-		bool found = false;
-		for (int j = 1; j <= degree; j++) {
-			if (p1[j].first == i) {
-				found = true;
-				coeff.first = p1[j].second.first;
-				coeff.second = p1[j].second.second;
-				break;
-			}
-		}
-		if (!found) {
-			coeff.first = 0;
-			coeff.second = 1;
-		}
-
-		Fraction sigma = divideFractions(coeff, leadingCoefficient);
+	for (int i = 1; i < p1.size(); i++) {
+		Fraction sigma = divideFractions(p1[i].second, leadingCoefficient);
 
 		if (sigma.second < 0) {
 			sigma.first *= -1;
 			sigma.second *= -1;
 		}
 
-		if (inx % 2 == 0) {
+		if ((i-1) % 2 == 0) {
 			sigma.first *= -1;
 		}
 
 		viet.push_back(sigma);
-		inx++;
 	}
 
 	return viet;
@@ -645,12 +618,17 @@ int main()
 
 		if (option != 4) {
 			inputPolynomial(polynomial1, 'P');
+			if (option != 8)
+			{
+				removeZeroTerms(polynomial1);
+			}
 			cout << "P(x) = ";
 			displayPolynomial(polynomial1);
 		}
 
 		if (option < 4 || option == 7) {
 			inputPolynomial(polynomial2, 'Q');
+			removeZeroTerms(polynomial2);
 			cout << "Q(x) = ";
 			displayPolynomial(polynomial2);
 		}
@@ -673,9 +651,11 @@ int main()
 			break;
 		case 4:
 			inputPolynomial(polynomial1, 'A');
+			removeZeroTerms(polynomial1);
 			cout << "A(x) = ";
 			displayPolynomial(polynomial1);
 			inputPolynomial(polynomial2, 'B');
+			removeZeroTerms(polynomial2);
 			cout << "B(x) = ";
 			displayPolynomial(polynomial2);
 			quotientRemainder = dividePolynomials(polynomial1, polynomial2);
