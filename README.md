@@ -5,7 +5,7 @@ Overview
 The Polynomial Calculator is a C++ project designed to perform various operations on polynomials with rational coefficients. The project includes fundamental arithmetic operations, polynomial transformations, and mathematical computations such as finding roots and applying Euclidean algorithms.
 
 Features
-The calculator supports the following functionalities:
+The calculator supports the following functionalities:  
 1.Addition of two polynomials: Computes P(x) + Q(x)
 2.Subtraction of two polynomials: Computes P(x) - Q(x)
 3.Multiplication of two polynomials: Computes P(x) * Q(x)
