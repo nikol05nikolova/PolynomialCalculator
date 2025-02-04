@@ -16,8 +16,9 @@ The calculator supports the following functionalities:
 7. Finding the greatest common divisor (GCD) of two polynomials using the Euclidean algorithm  
 8. Application of Vieta's formulas  
 9. Representation of a polynomial in terms of powers of (x + a)  
-10. Factorization of polynomials (if possible) and extraction of all rational roots  
-11. Implementation Details  
+10. Factorization of polynomials (if possible) and extraction of all rational roots
+11. Finding the k-th derivative
+12. Implementation Details  
 
 ## Technologies
 The project is fully written in C++. The following functionalities, helper classes, and libraries were used:
